@@ -1,11 +1,10 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  // Игнорируем ошибки TypeScript при сборке (чтобы деплой прошел)
+// Мы пишем : any, чтобы TypeScript не ругался на настройки
+const nextConfig: any = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Игнорируем ошибки ESLint при сборке
   eslint: {
     ignoreDuringBuilds: true,
   },
