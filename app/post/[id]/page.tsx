@@ -138,8 +138,6 @@ export default async function PostPage({ params }: Props) {
             prose-a:text-white prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-white transition-all
             prose-p:leading-[1.8] prose-p:mb-6
 
-            prose-blockquote:text-white prose-blockquote:border-white
-
             /* --- СТИЛИЗАЦИЯ ЦИТАТЫ (AUTHOR RIGHT ALIGN) --- */
             [&_blockquote_p:not(:first-of-type)]:text-right
             [&_blockquote_p:not(:first-of-type)]:mt-4
