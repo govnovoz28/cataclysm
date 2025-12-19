@@ -51,8 +51,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
       
       {/* Панель инструментов */}
       <div className="flex gap-2 p-2 border-b border-neutral-800 bg-neutral-900/30 flex-wrap">
-        <div className="w-px h-6 bg-neutral-800 mx-1 self-center" />
-
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
