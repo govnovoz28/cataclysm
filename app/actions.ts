@@ -7,13 +7,17 @@ import { revalidatePath } from 'next/cache';
 export async function incrementView(postId: string) {
   try {
     const cookieStore = await cookies();
-
+    // но если у тебя настроено с передачей cookieStore, оставь как есть.
     const supabase = createClient(cookieStore); 
+    const idAsNumber = Number(postId);
+    if (isNaN(idAsNumber)) {
+        console.error('[Action Error] postId не является числом:', postId);
+        return;
+    }
 
-    console.log(`[Action] Пытаюсь обновить просмотры для ID: ${postId}`);
-
+    console.log(`[Action] Пытаюсь обновить просмотры для ID: ${idAsNumber}`);
     const { error } = await supabase.rpc('increment_view_count', { 
-      post_id: postId 
+      post_id: idAsNumber 
     });
 
     if (error) {
@@ -22,8 +26,6 @@ export async function incrementView(postId: string) {
     }
 
     console.log('[Action] Успех! Обновляю кэш.');
-    
-    revalidatePath('/');
     revalidatePath(`/post/${postId}`);
     
   } catch (err) {
