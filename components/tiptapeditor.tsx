@@ -3,7 +3,7 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { useEffect } from 'react' // <--- 1. Добавили импорт useEffect
+import { useEffect } from 'react'
 
 interface TiptapEditorProps {
   content: string
@@ -18,12 +18,11 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
         placeholder: 'Напишите философскую мысль...',
       }),
     ],
-    content: content, // Это срабатывает только при первой инициализации
+    content: content,
     editorProps: {
       attributes: {
         spellcheck: 'false', 
-        // Все классы в одну строку, чтобы не было ошибок
-        class: 'prose prose-invert prose-lg max-w-none font-serif text-neutral-300 focus:outline-none min-h-[50vh] p-4 prose-headings:font-bold prose-headings:text-white prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-neutral-400 placeholder:text-neutral-700 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4 [&_blockquote_p:not(:first-of-type)]:text-neutral-500',
+        class: 'prose prose-invert prose-p:text-xl max-w-none font-serif text-neutral-300 focus:outline-none min-h-[50vh] p-4 prose-headings:font-bold prose-headings:text-white prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-neutral-400 placeholder:text-neutral-700 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4 [&_blockquote_p:not(:first-of-type)]:text-neutral-500',
       },
     },
     immediatelyRender: false,
@@ -31,15 +30,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
       onChange(editor.getHTML())
     },
   })
-
-  // --- 2. ДОБАВЛЕННЫЙ БЛОК ДЛЯ СИНХРОНИЗАЦИИ ---
   useEffect(() => {
     if (editor && content) {
-      // Если контент, который пришел из базы, отличается от того, что сейчас в редакторе
-      // (например, редактор пуст, а данные только что загрузились)
       if (editor.getHTML() !== content) {
-        // Дополнительная проверка: обновляем только если редактор не в фокусе,
-        // или если он почти пуст (чтобы курсор не скакал, если ты сам печатаешь)
         const isEditorEmpty = editor.getText().trim() === '' && editor.getHTML() === '<p></p>';
         
         if (isEditorEmpty || !editor.isFocused) {
@@ -48,7 +41,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
       }
     }
   }, [content, editor])
-  // ---------------------------------------------
 
   if (!editor) {
     return null

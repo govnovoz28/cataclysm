@@ -3,20 +3,17 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-// Отключаем кэширование, чтобы видеть свежие правки сразу
 export const revalidate = 0;
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-// --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ---
 function capitalizeFirstLetter(string: string | null | undefined) {
   if (!string) return '';
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// --- ФУНКЦИЯ ГЕНЕРАЦИИ МЕТА-ТЕГОВ (OGP) ---
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
@@ -80,7 +77,6 @@ export default async function PostPage({ params }: Props) {
       <nav className="sticky top-0 z-50 bg-[var(--background)]/80 backdrop-blur-md border-b border-neutral-900 py-4 px-6">
         <div className="max-w-[820px] mx-auto flex justify-between items-center text-xs font-mono uppercase tracking-widest">
           <Link href="/" className="hover:text-white text-[var(--muted)] transition-colors">← Index</Link>
-          {/* Убрал отображение Protocol ID */}
         </div>
       </nav>
 
@@ -100,14 +96,19 @@ export default async function PostPage({ params }: Props) {
         <div className={`max-w-[800px] mx-auto px-6 relative z-20 ${post.image_url ? '-mt-32 md:-mt-48' : 'pt-24'}`}>
           
           <header className="mb-14 text-center">
+            {/* МЕТА-ДАННЫЕ: ДАТА И АВТОР */}
             <div className="inline-flex items-center gap-5 px-6 py-3 mb-8 border border-neutral-800 bg-[var(--background)] text-xs font-mono text-neutral-500 uppercase tracking-widest shadow-2xl">
               <span className="opacity-100">{date}</span>
               {post.author && (
                 <>
                   <span className="text-neutral-500">/</span>
-                  <span className="text-white font-bold tracking-[0.1em]">
+                  {/* ССЫЛКА НА АВТОРА (БЕЗ ПОДЧЕРКИВАНИЯ) */}
+                  <Link 
+                    href={`/author/${post.author}`}
+                    className="text-[#e5e5e5] font-bold tracking-[0.1em] hover:text-white transition-colors"
+                  >
                     {post.author}
-                  </span>
+                  </Link>
                 </>
               )}
             </div>
@@ -123,12 +124,10 @@ export default async function PostPage({ params }: Props) {
             )}
           </header>
 
-          {/* 
-              ОСНОВНОЙ БЛОК КОНТЕНТА
-          */}
+          {/* ОСНОВНОЙ БЛОК КОНТЕНТА */}
           <div className="
             article-content
-            prose prose-invert prose-lg max-w-none 
+            prose prose-invert prose-p:text-xl max-w-none 
             font-serif text-[#d4d4d4] selection:bg-white selection:text-black
             
             prose-headings:font-serif prose-headings:font-medium prose-headings:text-white prose-headings:uppercase prose-headings:tracking-tight
@@ -137,11 +136,9 @@ export default async function PostPage({ params }: Props) {
             
             prose-a:text-white prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-white transition-all
             prose-p:leading-[1.8] prose-p:mb-6
-
-            /* --- СТИЛИЗАЦИЯ ЦИТАТЫ (AUTHOR RIGHT ALIGN) --- */
             [&_blockquote_p:not(:first-of-type)]:text-right
             [&_blockquote_p:not(:first-of-type)]:mt-4
-            [&_blockquote_p:not(:first-of-type)]:text-neutral-500
+            [&_blockquote_p:not(:first-of-type)]:text-[#e5e5e5]
           ">
              <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </div>
