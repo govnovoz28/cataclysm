@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import ViewCounter from '@/components/view-counter'; // <--- ИМПОРТ КОМПОНЕНТА
 
 export const revalidate = 0;
 
@@ -57,8 +58,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const { id } = await params;
-  
-  const { data: post } = await supabase.from('posts').select('*').eq('id', id).single();
+  const { data: post } = await supabase
+    .from('posts')
+    .select('*, views') 
+    .eq('id', id)
+    .single();
   
   if (!post) {
     notFound();
@@ -96,13 +100,13 @@ export default async function PostPage({ params }: Props) {
         <div className={`max-w-[800px] mx-auto px-6 relative z-20 ${post.image_url ? '-mt-32 md:-mt-48' : 'pt-24'}`}>
           
           <header className="mb-14 text-center">
-            {/* МЕТА-ДАННЫЕ: ДАТА И АВТОР */}
-            <div className="inline-flex items-center gap-5 px-6 py-3 mb-8 border border-neutral-800 bg-[var(--background)] text-xs font-mono text-neutral-500 uppercase tracking-widest shadow-2xl">
+            {/* МЕТА-ДАННЫЕ: ДАТА, АВТОР И ПРОСМОТРЫ */}
+            <div className="inline-flex flex-wrap justify-center items-center gap-x-5 gap-y-2 px-6 py-3 mb-8 border border-neutral-800 bg-[var(--background)] text-xs font-mono text-neutral-500 uppercase tracking-widest shadow-2xl">
               <span className="opacity-100">{date}</span>
+              
               {post.author && (
                 <>
                   <span className="text-neutral-500">/</span>
-                  {/* ССЫЛКА НА АВТОРА (БЕЗ ПОДЧЕРКИВАНИЯ) */}
                   <Link 
                     href={`/author/${post.author}`}
                     className="text-[#e5e5e5] font-bold tracking-[0.1em] hover:text-white transition-colors"
@@ -111,6 +115,14 @@ export default async function PostPage({ params }: Props) {
                   </Link>
                 </>
               )}
+
+              {/* --- ВСТАВКА СЧЕТЧИКА ПРОСМОТРОВ --- */}
+              <span className="text-neutral-500">/</span>
+              <div className="text-[#e5e5e5] font-bold tracking-[0.1em]">
+                <ViewCounter postId={post.id} initialViews={post.views || 0} />
+              </div>
+              {/* ----------------------------------- */}
+              
             </div>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-[1.1] text-white mb-6 drop-shadow-xl uppercase tracking-tighter">

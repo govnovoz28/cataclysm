@@ -19,7 +19,6 @@ export default async function Home({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
-  // 1. Создаем клиент Supabase (Server Component Style)
   const cookieStore = await cookies()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -38,22 +37,16 @@ export default async function Home({
   const currentPage = Number(params?.page) || 1;
   const from = (currentPage - 1) * POSTS_PER_PAGE;
   const to = from + POSTS_PER_PAGE - 1;
-
-  // 2. Проверяем, залогинен ли пользователь (чтобы поменять кнопку в хедере)
   const { data: { user } } = await supabase.auth.getUser()
-
-  // 3. СЛАЙДЕР
   const { data: sliderPosts } = await supabase
     .from('posts')
-    .select('id, title, excerpt, content, image_url, author, category, created_at')
+    .select('id, title, excerpt, content, image_url, author, category, created_at, views')
     .eq('is_featured', true) 
     .order('created_at', { ascending: false })
     .limit(5);
-
-  // 4. СЕТКА
   const { data: posts, count } = await supabase
     .from('posts')
-    .select('id, title, excerpt, content, image_url, author, created_at, category', { count: 'exact' }) 
+    .select('id, title, excerpt, content, image_url, author, created_at, category, views', { count: 'exact' }) 
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -68,7 +61,6 @@ export default async function Home({
         <div className="max-w-[1750px] mx-auto relative py-12 px-6 text-center">
             
             <div className="absolute right-6 top-6 md:top-auto md:bottom-12">
-                {/* Меняем кнопку в зависимости от статуса входа */}
                 <Link 
                     href="/admin" 
                     className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
@@ -107,6 +99,7 @@ export default async function Home({
             const hasExcerpt = post.excerpt && post.excerpt.trim().length > 0;
             const categoryName = post.category || 'POST';
             const titleLength = post.title.length;
+            const viewsCount = post.views || 0; 
 
             let titleClass = "text-3xl leading-[0.9] tracking-tight"; 
             if (titleLength > 80) {
@@ -153,10 +146,30 @@ export default async function Home({
                 </Link>
 
                 <div className="p-6 flex flex-col flex-grow">
+                  {/* МЕТАДАННЫЕ КАРТОЧКИ */}
                   <div className="flex items-center text-xs font-mono uppercase tracking-widest gap-2 mb-3 w-full text-neutral-500">
                     <span>{date}</span>
                     <span className="text-neutral-700">/</span>
                     <span className="text-neutral-400 font-semibold">{categoryName}</span>
+                    
+                    {/* --- ОТОБРАЖЕНИЕ ПРОСМОТРОВ --- */}
+                    <span className="text-neutral-700 ml-auto md:ml-0">/</span>
+                    <span className="flex items-center gap-1 text-neutral-400" title="Просмотры">
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        strokeWidth={1.5} 
+                        stroke="currentColor" 
+                        className="w-3 h-3 mb-[1px]"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </svg>
+                      {viewsCount}
+                    </span>
+                    {/* ----------------------------- */}
+                    
                   </div>
 
                   <Link href={`/post/${post.id}`} className="block w-full mb-4">

@@ -1,10 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-const ALLOWED_ADMINS = [
-  'svatoslav.kopaev046@gmail.com',
-  'kirill20042811@gmail.com',
-  'editor@cataclysm.com',
-]
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -21,6 +16,7 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll()
         },
+        // ИСПРАВЛЕНИЕ: Добавили явный тип для cookiesToSet
         setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
           cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
           
@@ -35,21 +31,17 @@ export async function middleware(request: NextRequest) {
       },
     }
   )
+
   const { data: { user } } = await supabase.auth.getUser()
 
-  const path = request.nextUrl.pathname
-  if (path.startsWith('/admin')) {
-    if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
-    if (!ALLOWED_ADMINS.includes(user.email || '')) {
-      return NextResponse.redirect(new URL('/', request.url))
-    }
+  // Если юзер не залогинен и пытается зайти в админку
+  if (request.nextUrl.pathname.startsWith('/admin') && !user) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
-  if (path === '/login') {
-    if (user && ALLOWED_ADMINS.includes(user.email || '')) {
-      return NextResponse.redirect(new URL('/admin', request.url))
-    }
+
+  // Если юзер залогинен, но идет на логин
+  if (request.nextUrl.pathname === '/login' && user) {
+    return NextResponse.redirect(new URL('/admin', request.url))
   }
 
   return response
