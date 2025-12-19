@@ -61,11 +61,11 @@ body {
 
 .ProseMirror blockquote,
 .article-content blockquote {
-  border-left: 3px solid #ffffff !important;
+  border-left: 3px solid #e5e5e5 !important;
   padding-left: 1rem !important;
   margin-left: 0 !important; 
   font-style: italic !important;
-  color: #ffffff !important; 
+  color: #e5e5e5 !important; 
   background: transparent !important;
   quotes: none !important;
 }
