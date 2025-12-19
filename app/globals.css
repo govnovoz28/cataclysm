@@ -78,9 +78,11 @@ body {
 .article-content blockquote {
   border-left: 3px solid var(--muted) !important;
   padding-left: 1rem !important;
-  margin-left: 0 !important; /* Выравнивание */
+  margin-left: 0 !important; 
   font-style: italic !important;
-  color: var(--muted) !important;
+  
+  color: #ffffff !important; 
+
   background: transparent !important;
   quotes: none !important;
 }
