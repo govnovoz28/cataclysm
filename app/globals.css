@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Spacemorgue vibe: Глубокий темно-серый, почти черный */
+  --background: #0a0a0a; 
+  /* Цвет слоновой кости / старой бумаги для текста */
+  --foreground: #e5e5e5; 
+  /* Акцент */
+  --accent: #ffffff; 
+  /* Вторичный текст */
+  --muted: #737373;
+  /* Границы */
+  --border: #262626;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  /* Шрифт */
+  font-family: var(--font-serif), serif; 
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Скроллбар минималистичный */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ========================================================= */
+/*   СИНХРОНИЗАЦИЯ СТИЛЕЙ: РЕДАКТОР (.ProseMirror) + СТАТЬЯ (.article-content) */
+/* ========================================================= */
+
+/* Убираем outline только у редактора */
+.ProseMirror {
+  outline: none !important; 
+}
+
+/* 1. ЖИРНЫЙ ТЕКСТ */
+.ProseMirror strong,
+.article-content strong {
+  font-weight: 700 !important;
+  color: #ffffff !important; /* Ярко-белый */
+}
+
+/* 2. КУРСИВ (Убираем все подчеркивания и линии) */
+.ProseMirror em,
+.article-content em {
+  font-style: italic !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* 3. ЦИТАТЫ (BLOCKQUOTE) */
+.ProseMirror blockquote,
+.article-content blockquote {
+  border-left: 3px solid var(--muted) !important;
+  padding-left: 1rem !important;
+  margin-left: 0 !important; /* Выравнивание */
+  font-style: italic !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+  quotes: none !important;
+}
+
+/* 4. СПИСКИ (UL / OL) */
+.ProseMirror ul,
+.article-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.ProseMirror ol,
+.article-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Элементы списка */
+.ProseMirror li,
+.article-content li {
+  padding-left: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Заголовки (на случай если они есть внутри контента) */
+.ProseMirror h2, .article-content h2 {
+  color: white !important;
+  font-weight: 700 !important;
+  margin-top: 2em !important;
+  margin-bottom: 1em !important;
+}
