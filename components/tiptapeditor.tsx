@@ -51,17 +51,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
       
       {/* Панель инструментов */}
       <div className="flex gap-2 p-2 border-b border-neutral-800 bg-neutral-900/30 flex-wrap">
-        
-        {/* Кнопка сброса в параграф (Решение проблемы) */}
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          className={`${btnBase} ${editor.isActive('paragraph') ? activeStyle : inactiveStyle}`}
-          title="Превратить в обычный текст"
-        >
-          TEXT
-        </button>
-
         <div className="w-px h-6 bg-neutral-800 mx-1 self-center" />
 
         <button
@@ -91,15 +80,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
           className={`${btnBase} ${editor.isActive('blockquote') ? activeStyle : inactiveStyle}`}
         >
           QUOTE
-        </button>
-
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
-           className={`${btnBase} ml-auto text-red-400 hover:text-red-300 hover:border-red-900`}
-           title="Очистить форматирование"
-        >
-          CLEAR
         </button>
       </div>
 
