@@ -21,7 +21,7 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
     editorProps: {
       attributes: {
         spellcheck: 'false', 
-        class: 'prose prose-invert prose-p:text-xl max-w-none font-serif text-neutral-300 focus:outline-none min-h-[50vh] p-4 prose-headings:font-bold prose-headings:text-white prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-neutral-400 placeholder:text-neutral-700 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4 [&_blockquote_p:not(:first-of-type)]:text-neutral-500',
+        class: 'prose prose-invert prose-p:text-xl max-w-none font-serif text-neutral-300 focus:outline-none min-h-[50vh] p-4 prose-headings:font-bold prose-headings:text-white prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#e5e5e5] placeholder:text-neutral-700 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4 [&_blockquote_p:not(:first-of-type)]:text-[#e5e5e5]',
       },
     },
     immediatelyRender: false,
@@ -31,7 +31,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
   })
   useEffect(() => {
     if (editor && content !== undefined) {
-      // Если контент отличается от HTML редактора И редактор не в фокусе - обновляем (чтобы не сбивать курсор при наборе)
       if (editor.getHTML() !== content && !editor.isFocused) {
           editor.commands.setContent(content)
       }
