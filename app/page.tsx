@@ -88,7 +88,7 @@ export default async function Home({
                 alt="Cataclysm Logo"
                 width={200} 
                 height={200} 
-                className="w-11 h-11 md:w-15 md:h-15 object-contain opacity-90"
+                className="w-12 h-12 md:w-14 md:h-14 object-contain opacity-90"
             />
         </div>
 
