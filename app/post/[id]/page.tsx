@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import ViewCounter from '@/components/view-counter'; // <--- ИМПОРТ КОМПОНЕНТА
+import ViewCounter from '@/components/view-counter';
 
 export const revalidate = 0;
 
@@ -60,12 +60,15 @@ export default async function PostPage({ params }: Props) {
   const { id } = await params;
   const { data: post } = await supabase
     .from('posts')
-    .select('*, views, categories(title, slug)')    .eq('id', id)
+    .select('*, views, categories(title, slug)')
+    .eq('id', id)
     .single();
   
   if (!post) {
     notFound();
   }
+
+  const category = Array.isArray(post.categories) ? post.categories[0] : post.categories;
 
   const formattedTitle = capitalizeFirstLetter(post.title);
 
@@ -76,7 +79,6 @@ export default async function PostPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       
-      {/* Навигация */}
       <nav className="sticky top-0 z-50 bg-[var(--background)]/80 backdrop-blur-md border-b border-neutral-900 py-4 px-6">
         <div className="max-w-[820px] mx-auto flex justify-between items-center text-xs font-mono uppercase tracking-widest">
           <Link href="/" className="hover:text-white text-[var(--muted)] transition-colors">← Index</Link>
@@ -95,14 +97,24 @@ export default async function PostPage({ params }: Props) {
           </div>
         )}
 
-        {/* Контент-блок */}
         <div className={`max-w-[800px] mx-auto px-6 relative z-20 ${post.image_url ? '-mt-32 md:-mt-48' : 'pt-24'}`}>
           
           <header className="mb-14 text-center">
-            {/* МЕТА-ДАННЫЕ: ДАТА, АВТОР И ПРОСМОТРЫ */}
             <div className="inline-flex flex-wrap justify-center items-center gap-x-5 gap-y-2 px-6 py-3 mb-8 border border-neutral-800 bg-[var(--background)] text-xs font-mono text-neutral-500 uppercase tracking-widest shadow-2xl">
               <span className="opacity-100">{date}</span>
               
+              {category && (
+                <>
+                  <span className="text-neutral-500">/</span>
+                  <Link 
+                    href={`/category/${category.slug}`}
+                    className="text-[#e5e5e5] font-bold tracking-[0.1em] hover:text-white transition-colors"
+                  >
+                    {category.title}
+                  </Link>
+                </>
+              )}
+
               {post.author && (
                 <>
                   <span className="text-neutral-500">/</span>
@@ -115,12 +127,10 @@ export default async function PostPage({ params }: Props) {
                 </>
               )}
 
-              {/* --- ВСТАВКА СЧЕТЧИКА ПРОСМОТРОВ --- */}
               <span className="text-neutral-500">/</span>
               <div className="text-[#e5e5e5] font-bold tracking-[0.1em]">
                 <ViewCounter postId={post.id} initialViews={post.views || 0} />
               </div>
-              {/* ----------------------------------- */}
               
             </div>
 
@@ -135,7 +145,6 @@ export default async function PostPage({ params }: Props) {
             )}
           </header>
 
-          {/* ОСНОВНОЙ БЛОК КОНТЕНТА */}
           <div className="
             article-content
             prose prose-invert prose-p:text-xl max-w-none 

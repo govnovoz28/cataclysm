@@ -163,7 +163,7 @@ export default async function Home({
                           href={`/author/${post.author}`}
                           className="block bg-black border-r border-b border-neutral-800 px-3 py-1 hover:bg-white group/author transition-colors cursor-pointer"
                         >
-                          <span className="font-mono text-[10px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
+                          <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
                             {post.author}
                           </span>
                         </Link>
