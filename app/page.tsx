@@ -61,8 +61,6 @@ export default async function Home({
 
 <header className="border-b border-neutral-900 mb-0 relative overflow-hidden">
     
-    { 
-}
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
         <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
             <Image 
@@ -74,15 +72,9 @@ export default async function Home({
         </div>
     </div>
 
-    { 
-}
     <div className="max-w-[1750px] mx-auto relative py-12 px-6 text-center z-10">
         
-        { 
-}
         <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20 pointer-events-none select-none">
-            { 
-}
             <Image 
                 src="/logo.png" 
                 alt="Cataclysm Logo"
@@ -92,8 +84,6 @@ export default async function Home({
             />
         </div>
 
-        { 
-}
         <div className="absolute right-6 top-6 md:top-auto md:bottom-12 z-20">
             <Link 
                 href="/admin" 
@@ -103,8 +93,6 @@ export default async function Home({
             </Link>
         </div>
 
-        { 
-}
         <h1 className={`${orbitron.className} relative text-5xl md:text-6xl font-bold tracking-normal mb-2 lowercase select-none cursor-default text-white drop-shadow-2xl`}>
             cataclysm
         </h1>
@@ -156,17 +144,26 @@ export default async function Home({
                   href={`/post/${post.id}`} 
                   className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
                 >
-                   {post.author && (
-                    <div className="absolute top-0 left-0 z-20">
-                      <object>
-                        <Link 
-                          href={`/author/${post.author}`}
-                          className="block bg-black border-r border-b border-neutral-800 px-3 py-1 hover:bg-white group/author transition-colors cursor-pointer"
-                        >
-                          <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
-                            {post.author}
-                          </span>
-                        </Link>
+
+              {post.author && (
+                <div className="absolute top-0 left-0 z-20 flex flex-col items-start">
+                  <object>
+                    {post.author.split(',').map((auth: string, index: number) => {
+                        const cleanAuthor = auth.trim();
+                        if (!cleanAuthor) return null; 
+
+                        return (
+                          <Link 
+                            key={index}
+                            href={`/author/${cleanAuthor}`}
+                                  className="block bg-black border-r border-b border-neutral-800 px-3 py-1 hover:bg-white group/author transition-colors cursor-pointer w-fit"
+                                >
+                                  <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
+                                    {cleanAuthor}
+                                  </span>
+                                </Link>
+                            );
+                        })}
                       </object>
                     </div>
                   )}
