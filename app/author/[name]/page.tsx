@@ -1,7 +1,5 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
-import HeroSlider from '@/components/heroslider';
 import { Orbitron } from 'next/font/google';
 
 const orbitron = Orbitron({
@@ -12,102 +10,44 @@ const orbitron = Orbitron({
 
 export const revalidate = 0;
 
-const POSTS_PER_PAGE = 6;
+export default async function AuthorPage({ params }: { params: Promise<{ name: string }> }) {
+  const { name } = await params;
+  const authorName = decodeURIComponent(name);
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
-  const cookieStore = await cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-      },
-    }
-  )
-
-  const params = await searchParams;
-  
-  const currentPage = Number(params?.page) || 1;
-  const from = (currentPage - 1) * POSTS_PER_PAGE;
-  const to = from + POSTS_PER_PAGE - 1;
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  const { data: sliderPosts } = await supabase
+  const { data: posts } = await supabase
     .from('posts')
-    .select('id, title, excerpt, content, image_url, author, category, created_at, views, categories(title, slug)')
-    .eq('is_featured', true) 
-    .order('created_at', { ascending: false })
-    .limit(5);
-
-  const { data: posts, count } = await supabase
-    .from('posts')
-    .select('id, title, excerpt, content, image_url, author, created_at, category, views, categories(title, slug)', { count: 'exact' }) 
-    .order('created_at', { ascending: false })
-    .range(from, to);
-
-  const totalPages = count ? Math.ceil(count / POSTS_PER_PAGE) : 1;
-  const hasNextPage = currentPage < totalPages;
-  const hasPrevPage = currentPage > 1;
+    .select('id, title, excerpt, content, image_url, author, created_at, category') 
+    .eq('author', authorName)
+    .order('created_at', { ascending: false });
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
-      
-      <header className="border-b border-neutral-900 mb-0">
-        <div className="max-w-[1750px] mx-auto relative py-12 px-6 text-center">
-            
-            <div className="absolute right-6 top-6 md:top-auto md:bottom-12">
-                <Link 
-                    href="/admin" 
-                    className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
-                >
-                    {user ? '[ CONTROL PANEL ]' : '[ LOGIN ]'}
-                </Link>
-            </div>
-
-            <h1 className={`${orbitron.className} text-5xl md:text-6xl font-bold tracking-normal mb-2 lowercase select-none cursor-default text-white`}>
-            cataclysm
-            </h1>
-            <p className="font-mono text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default">
-            ACCD and Layer-culture research
-            </p>
+      <header className="py-16 px-6 text-center border-b border-neutral-900 mb-0 relative bg-[#0a0a0a]">
+         <div className="absolute top-8 left-8">
+            <Link href="/" className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-3 py-2">
+            ← Return to Index
+            </Link>
         </div>
+
+        <h1 className={`${orbitron.className} text-4xl md:text-6xl font-bold tracking-normal mb-2 text-white`}>
+          {authorName}
+        </h1>
+        <p className="font-mono text-[13px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
+          Subject Archives // Total Records: {posts?.length || 0}
+        </p>
       </header>
 
-      {sliderPosts && sliderPosts.length > 0 && (
-        <HeroSlider posts={sliderPosts} />
-      )}
-
-      <section className={`flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full ${sliderPosts && sliderPosts.length > 0 ? 'pt-0 md:pt-4' : 'pt-16'}`}>
-        <div className="mb-10 flex items-center gap-4 select-none">
-             <span className="h-[1px] bg-neutral-900 flex-grow"></span>
-             <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
-               Latest Articles
-             </span>
-             <span className="h-[1px] bg-neutral-900 flex-grow"></span>
-        </div>
-
+      <section className="flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full pt-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
           {posts?.map((post) => {
             const date = new Date(post.created_at).toLocaleDateString('ru-RU', {
               day: 'numeric', month: 'long', year: 'numeric'
             });
+            
             const hasExcerpt = post.excerpt && post.excerpt.trim().length > 0;
-            
-            
-            
-            const catData = Array.isArray(post.categories) ? post.categories[0] : post.categories;
-            const categoryName = catData?.title || post.category || 'POST';
-            
+            const categoryName = post.category || 'POST';
             const titleLength = post.title.length;
-            const viewsCount = post.views || 0; 
-
+            
             let titleClass = "text-3xl leading-[0.9] tracking-tight"; 
             if (titleLength > 80) {
               titleClass = "text-xl leading-snug tracking-wide";
@@ -124,19 +64,15 @@ export default async function Home({
                   href={`/post/${post.id}`} 
                   className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
                 >
-                   { 
-}
-                   {post.author && (
+                  {post.author && (
                     <div className="absolute top-0 left-0 z-20">
                       <object>
-                        <Link 
-                          href={`/author/${post.author}`}
-                          className="block bg-black border-r border-b border-neutral-800 px-3 py-1 hover:bg-white group/author transition-colors cursor-pointer"
-                        >
-                          <span className="font-mono text-[10px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
+                        <div className="block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-default">
+                          {/* ИЗМЕНЕНИЕ ЗДЕСЬ: text-[10px] -> text-[12px] */}
+                          <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest">
                             {post.author}
                           </span>
-                        </Link>
+                        </div>
                       </object>
                     </div>
                   )}
@@ -155,42 +91,10 @@ export default async function Home({
                 </Link>
 
                 <div className="p-6 flex flex-col flex-grow">
-                  { 
-}
                   <div className="flex items-center text-xs font-mono uppercase tracking-widest gap-2 mb-3 w-full text-neutral-500">
                     <span>{date}</span>
                     <span className="text-neutral-700">/</span>
-                    
-                    { 
-}
-                    {catData ? (
-                        <Link 
-                            href={`/category/${catData.slug}`} 
-                            className="text-neutral-400 hover:text-white transition-colors font-semibold z-30 relative"
-                        >
-                            {catData.title}
-                        </Link>
-                    ) : (
-                        <span className="text-neutral-400 font-semibold">{categoryName}</span>
-                    )}
-                    
-                    { 
-}
-                    <span className="text-neutral-700 ml-auto md:ml-0">/</span>
-                    <span className="flex items-center gap-1 text-neutral-400" title="Просмотры">
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        strokeWidth={1.5} 
-                        stroke="currentColor" 
-                        className="w-3 h-3 mb-[1px]"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                      </svg>
-                      {viewsCount}
-                    </span>
+                    <span className="text-neutral-400 font-semibold">{categoryName}</span>
                   </div>
 
                   <Link href={`/post/${post.id}`} className="block w-full mb-4">
@@ -214,47 +118,17 @@ export default async function Home({
           })}
         </div>
 
-        <div className="flex justify-between items-center mt-20 pt-8 border-t border-neutral-900 font-mono text-xs uppercase tracking-widest">
-          {hasPrevPage ? (
-            <Link 
-              href={`/?page=${currentPage - 1}`}
-              className="text-neutral-400 hover:text-white transition-colors px-4 py-2 border border-neutral-800 hover:border-neutral-500"
-            >
-              &larr; Prev Page
-            </Link>
-          ) : (
-            <span className="text-neutral-800 px-4 py-2 border border-neutral-900 cursor-not-allowed">
-              &larr; Prev Page
-            </span>
-          )}
-
-          <span className="text-neutral-600 select-none">
-            Page {currentPage} / {totalPages}
-          </span>
-
-          {hasNextPage ? (
-            <Link 
-              href={`/?page=${currentPage + 1}`}
-              className="text-neutral-400 hover:text-white transition-colors px-4 py-2 border border-neutral-800 hover:border-neutral-500"
-            >
-              Next Page &rarr;
-            </Link>
-          ) : (
-            <span className="text-neutral-800 px-4 py-2 border border-neutral-900 cursor-not-allowed">
-              Next Page &rarr;
-            </span>
-          )}
-        </div>
+        {(!posts || posts.length === 0) && (
+            <div className="text-center py-20 border border-dashed border-neutral-900 mt-10">
+                <p className="font-mono text-neutral-600 uppercase tracking-widest text-xs">
+                    // No data found in archives for subject: {authorName}
+                </p>
+                <p className="text-[10px] text-neutral-700 mt-2 font-mono">
+                    Check if database entry matches exactly (Case Sensitive).
+                </p>
+            </div>
+        )}
       </section>
-
-      <footer className="py-8 text-center border-t border-neutral-900 mt-auto bg-black">
-        <p className="text-[15px] font-mono text-neutral-400 select-none">
-          ВСЁ, ЧТО МОГЛО ПРОИЗОЙТИ - УЖЕ ПРОИЗОШЛО
-          </p>
-          <p className="text-[14px] font-mono text-neutral-500 select-none">
-          cataclysm journal / {new Date().getFullYear()} 
-        </p>
-      </footer>
     </div>
   );
 }
