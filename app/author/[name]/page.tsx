@@ -14,9 +14,22 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
   const { name } = await params;
   const authorName = decodeURIComponent(name);
 
+  // 1. Убедитесь, что запрос выглядит именно так (с categories(title, slug))
   const { data: posts } = await supabase
     .from('posts')
-    .select('id, title, excerpt, content, image_url, author, created_at, category') 
+    .select(`
+      id, 
+      title, 
+      excerpt, 
+      content, 
+      image_url, 
+      author, 
+      created_at, 
+      categories (
+        title,
+        slug
+      )
+    `) 
     .eq('author', authorName)
     .order('created_at', { ascending: false });
 
@@ -24,8 +37,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       <header className="py-16 px-6 text-center border-b border-neutral-900 mb-0 relative bg-[#0a0a0a]">
          <div className="absolute top-8 left-8">
-            { 
-}
             <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
             ← Return to Index
             </Link>
@@ -35,7 +46,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
           {authorName}
         </h1>
         <p className="font-mono text-[13px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
-          Subject Archives 
+          Subject Archives // Total Records: {posts?.length || 0}
         </p>
       </header>
 
@@ -47,7 +58,12 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
             });
             
             const hasExcerpt = post.excerpt && post.excerpt.trim().length > 0;
-            const categoryName = post.category || 'POST';
+            
+            // Обработка данных категории
+            const categoryData = Array.isArray(post.categories) ? post.categories[0] : post.categories;
+            const categoryName = categoryData?.title || 'POST';
+            const categorySlug = categoryData?.slug;
+
             const titleLength = post.title.length;
             
             let titleClass = "text-3xl leading-[0.9] tracking-tight"; 
@@ -95,7 +111,20 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
                   <div className="flex items-center text-xs font-mono uppercase tracking-widest gap-2 mb-3 w-full text-neutral-500">
                     <span>{date}</span>
                     <span className="text-neutral-700">/</span>
-                    <span className="text-neutral-400 font-semibold">{categoryName}</span>
+                    
+                    {/* ИСПРАВЛЕНИЕ ЗДЕСЬ */}
+                    {categorySlug ? (
+                      <Link 
+                        href={`/category/${categorySlug}`}
+                        // Добавлен класс 'relative' и 'z-20'. Без relative z-index не работает.
+                        className="relative z-20 text-neutral-400 font-semibold hover:text-white transition-colors cursor-pointer border-b border-transparent hover:border-white/50"
+                      >
+                        {categoryName}
+                      </Link>
+                    ) : (
+                      <span className="text-neutral-400 font-semibold">{categoryName}</span>
+                    )}
+
                   </div>
 
                   <Link href={`/post/${post.id}`} className="block w-full mb-4">
@@ -122,7 +151,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
         {(!posts || posts.length === 0) && (
             <div className="text-center py-20 border border-dashed border-neutral-900 mt-10">
                 <p className="font-mono text-neutral-600 uppercase tracking-widest text-xs">
-                    
+                    // No data found in archives for subject: {authorName}
                 </p>
                 <p className="text-[10px] text-neutral-700 mt-2 font-mono">
                     Check if database entry matches exactly (Case Sensitive).
