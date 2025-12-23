@@ -14,9 +14,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
   const { name } = await params;
   const authorName = decodeURIComponent(name);
 
-  // 1. ВАЖНОЕ ИЗМЕНЕНИЕ:
-  // Мы используем JOIN запрос к таблице categories.
-  // Supabase автоматически найдет связь по foreign key (обычно это category_id).
   const { data: posts } = await supabase
     .from('posts')
     .select(`
@@ -61,12 +58,8 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
             
             const hasExcerpt = post.excerpt && post.excerpt.trim().length > 0;
             
-            // 2. ОБРАБОТКА ДАННЫХ КАТЕГОРИИ
-            // Supabase может вернуть это как массив или объект в зависимости от настроек связи.
-            // Делаем безопасную проверку:
             const categoryData = Array.isArray(post.categories) ? post.categories[0] : post.categories;
             
-            // Если категория нашлась, берем title, иначе пишем 'POST'
             const categoryName = categoryData?.title || 'POST';
             const categorySlug = categoryData?.slug;
 
@@ -118,11 +111,11 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
                     <span>{date}</span>
                     <span className="text-neutral-700">/</span>
                     
-                    {/* 3. ССЫЛКА НА КАТЕГОРИЮ */}
+                    {/* ОБНОВЛЕННЫЙ СТИЛЬ ССЫЛКИ КАТЕГОРИИ */}
                     {categorySlug ? (
                       <Link 
                         href={`/category/${categorySlug}`}
-                        className="text-neutral-400 font-semibold hover:text-white transition-colors cursor-pointer z-30 border-b border-transparent hover:border-white/50"
+                        className="text-neutral-400 hover:text-white transition-colors font-semibold z-30 relative"
                       >
                         {categoryName}
                       </Link>
