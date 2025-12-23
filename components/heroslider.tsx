@@ -45,17 +45,13 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
   const nextIndex = getIndex(1);
   const activePost = posts[currentIndex];
   
-  
-  
   const catData = Array.isArray(activePost.categories) ? activePost.categories[0] : activePost.categories;
-  
 
   const dateObj = new Date(activePost.created_at);
   const dateTech = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${dateObj.getFullYear()}`;
 
   const titleText = activePost.title || '';
   const titleLen = titleText.length;
-  
 
   let titleClass = "";
   let titleClamp = "";
@@ -92,13 +88,11 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
       onMouseLeave={() => setIsPaused(false)}
     >
       
-      { 
-}
+      {/* Background Layer */}
       <div className="absolute inset-0 flex items-center justify-center px-4">
         <div className="relative w-full max-w-[1500px] h-full flex items-center justify-center">
 
-            { 
-}
+            {/* Left Prev Image */}
             <div className="absolute left-0 md:left-[2%] w-[20%] md:w-[25%] h-[280px] md:h-[380px] z-10 transition-all duration-700 ease-in-out pointer-events-none hidden md:block">
                 {posts[prevIndex].image_url ? (
                 <img src={posts[prevIndex].image_url!} className="w-full h-full object-cover grayscale brightness-[0.25]" alt="" />
@@ -107,8 +101,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 )}
             </div>
 
-            { 
-}
+            {/* Right Next Image */}
             <div className="absolute right-0 md:right-[2%] w-[20%] md:w-[25%] h-[280px] md:h-[380px] z-10 transition-all duration-700 ease-in-out pointer-events-none hidden md:block">
                 {posts[nextIndex].image_url ? (
                 <img src={posts[nextIndex].image_url!} className="w-full h-full object-cover grayscale brightness-[0.25]" alt="" />
@@ -117,14 +110,12 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 )}
             </div>
 
-            { 
-}
+            {/* Main Center Card */}
             <div className="relative z-20 w-full md:w-[70%] max-w-[1000px] h-full md:h-[450px] 
                             bg-[#0a0a0a] border border-neutral-900 shadow-2xl 
                             flex flex-col md:flex-row transition-transform duration-500">
                 
-                { 
-}
+                {/* Navigation Buttons */}
                 <button onClick={(e) => {e.stopPropagation(); handlePrev()}} className="absolute -left-16 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center w-12 h-12 text-white transition-all duration-300 z-30 hover:scale-110 opacity-70 hover:opacity-100 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -137,8 +128,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                     </svg>
                 </button>
 
-                { 
-}
+                {/* Left Side: Image */}
                 <div className="relative w-full md:w-[45%] h-56 md:h-full overflow-hidden border-b md:border-b-0 md:border-r border-neutral-900 bg-neutral-900">
                 <Link href={`/post/${activePost.id}`} className="block w-full h-full group">
                     {activePost.image_url ? (
@@ -151,16 +141,13 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 </Link>
                 </div>
 
-                { 
-}
+                {/* Right Side: Content */}
                 <div className="w-full md:w-[55%] p-6 md:p-10 flex flex-col h-full bg-[#0a0a0a]">
                 
-                { 
-}
+                {/* Meta Header */}
                 <div className="flex justify-between items-center border-b border-neutral-900 pb-4 mb-4 shrink-0">
                     <div className="flex items-center gap-3">
-                        { 
-}
+                        {/* Category */}
                         {catData ? (
                             <Link 
                                 href={`/category/${catData.slug}`}
@@ -173,23 +160,43 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                                 {activePost.category || 'SYSTEM'}
                             </span>
                         )}
-                        { 
-}
-                        
+                        {/* Divider */}
                         <span className="text-neutral-700 text-sm font-mono">/</span>
+                        
+                        {/* Authors - UPDATED LOGIC HERE */}
                         {activePost.author ? (
-                            <Link href={`/author/${activePost.author}`} className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors z-30">
-                            {activePost.author}
-                            </Link>
+                            <div className="flex flex-wrap items-center z-30">
+                                {activePost.author.split(',').map((authorName, index, arr) => {
+                                    const cleanName = authorName.trim();
+                                    if (!cleanName) return null;
+                                    
+                                    const isLast = index === arr.length - 1;
+
+                                    return (
+                                        <div key={index} className={`flex items-center ${!isLast ? 'mr-2' : ''}`}>
+                                            <Link 
+                                                href={`/author/${cleanName}`} 
+                                                className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors border-b border-transparent hover:border-white/50"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                {cleanName}
+                                            </Link>
+                                            {!isLast && (
+                                                <span className="text-neutral-500 text-sm font-mono font-bold ml-0.5">,</span>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         ) : (
                             <span className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest">UNKNOWN</span>
                         )}
+
                     </div>
                     <span className="text-sm font-mono text-neutral-500 tracking-widest">{dateTech}</span>
                 </div>
 
-                { 
-}
+                {/* Title & Excerpt */}
                 <div className="flex-grow flex flex-col justify-start min-h-0 relative">
                     <Link href={`/post/${activePost.id}`} className="block w-full">
                         <div className={`flex items-start break-words w-full ${!hasExcerpt ? 'mb-0' : 'mb-3'}`}>
@@ -209,8 +216,6 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                     )}
                 </div>
 
-                { 
-}
                 <div className="mt-auto pt-4 border-t border-transparent shrink-0 flex justify-end items-center">
                     <Link href={`/post/${activePost.id}`} className="group flex items-center gap-3 px-6 py-3 border border-neutral-800 hover:bg-neutral-900 transition-all">
                         <span className="text-xs md:text-sm font-mono uppercase tracking-[0.2em] text-neutral-300 group-hover:text-white">
