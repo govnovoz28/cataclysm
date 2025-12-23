@@ -107,7 +107,7 @@ export default async function CategoryPage({ params }: Props) {
                 key={post.id} 
                 className="group flex flex-col bg-[#111] border border-neutral-900 hover:border-neutral-700 transition-colors duration-300 relative"
               >
-                {/* 1. Ссылка только на картинку (чтобы не было вложенных ссылок) */}
+                {/* 1. Ссылка только на картинку */}
                 <Link 
                   href={`/post/${post.id}`} 
                   className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
@@ -125,9 +125,13 @@ export default async function CategoryPage({ params }: Props) {
                   )}
                 </Link>
 
-                {/* 2. Блок авторов вынесен отдельно и позиционирован абсолютно поверх картинки */}
+                {/* 2. Блок авторов (Смещаются вниз по очереди) */}
                 {post.author && (
-                    <div className="absolute top-0 left-0 z-20 flex flex-wrap max-w-full pointer-events-none">
+                    <div className="absolute top-0 left-0 z-20 flex flex-col items-start pointer-events-none">
+                        {/* 
+                           pointer-events-none на контейнере, чтобы клики мимо имен проходили на статью.
+                           flex-col + items-start = вертикальный список 
+                        */}
                         {post.author.split(',').map((authorName: string, index: number) => {
                             const cleanName = authorName.trim();
                             if (!cleanName) return null;
@@ -136,7 +140,7 @@ export default async function CategoryPage({ params }: Props) {
                                 <Link 
                                     key={index}
                                     href={`/author/${cleanName}`}
-                                    className="pointer-events-auto block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-pointer hover:bg-white transition-colors"
+                                    className="pointer-events-auto block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-pointer hover:bg-white transition-colors w-fit"
                                 >
                                   <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
                                     {cleanName}
