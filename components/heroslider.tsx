@@ -176,8 +176,8 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                                         <div key={index} className={`flex items-center ${!isLast ? 'mr-2' : ''}`}>
                                             <Link 
                                                 href={`/author/${cleanName}`} 
-                                                className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors border-b border-transparent hover:border-white/50"
-                                                onClick={(e) => e.stopPropagation()}
+                                                className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors"
+                                                onClick={(e) => e.stopPropagation()} 
                                             >
                                                 {cleanName}
                                             </Link>
