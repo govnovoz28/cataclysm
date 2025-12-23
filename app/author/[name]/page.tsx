@@ -15,6 +15,12 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
   const { name } = await params;
   const authorName = decodeURIComponent(name);
 
+  // ИСПРАВЛЕНИЕ:
+  // Используем простой .ilike с процентами с обеих сторон.
+  // Это означает: "найти строку, где внутри есть это имя".
+  // Это работает и для "Иван", и для "Иван, Петр", и для "Петр, Иван".
+  // Старая конструкция с .or() и жесткими пробелами была слишком хрупкой.
+
   const { data: posts } = await supabase
     .from('posts')
     .select(`
@@ -30,7 +36,8 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
         slug
       )
     `) 
-    .eq('author', authorName)
+    // Ищем автора в любой части строки (регистронезависимо)
+    .ilike('author', `%${authorName}%`)
     .order('created_at', { ascending: false });
 
   return (
@@ -87,6 +94,10 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
               titleClass = "text-2xl leading-none";
             }
 
+            const displayAuthor = post.author 
+                ? post.author.split(',').map((a: string) => a.trim()).join(' / ') 
+                : null;
+
             return (
               <article 
                 key={post.id} 
@@ -96,12 +107,12 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
                   href={`/post/${post.id}`} 
                   className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
                 >
-                  {post.author && (
+                  {displayAuthor && (
                     <div className="absolute top-0 left-0 z-20">
                       <object>
                         <div className="block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-default">
                           <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest">
-                            {post.author}
+                            {displayAuthor}
                           </span>
                         </div>
                       </object>
@@ -166,7 +177,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
                     // No data found in archives for subject: {authorName}
                 </p>
                 <p className="text-[10px] text-neutral-700 mt-2 font-mono">
-                    Check if database entry matches exactly (Case Sensitive).
+                    System scanned for inclusion of signature.
                 </p>
             </div>
         )}
