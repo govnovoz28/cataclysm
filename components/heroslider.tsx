@@ -173,7 +173,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                                     const isLast = index === arr.length - 1;
 
                                     return (
-                                        <div key={index} className={`flex items-center ${!isLast ? 'mr-2' : ''}`}>
+                                        <div key={index} className={`flex items-center ${!isLast ? 'mr-3' : ''}`}>
                                             <Link 
                                                 href={`/author/${cleanName}`} 
                                                 className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors"
@@ -182,7 +182,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                                                 {cleanName}
                                             </Link>
                                             {!isLast && (
-                                                <span className="text-neutral-500 text-sm font-mono font-bold ml-0.5">,</span>
+                                                <span className="text-neutral-500 text-sm font-mono font-bold">,</span>
                                             )}
                                         </div>
                                     );
