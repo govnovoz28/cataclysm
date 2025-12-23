@@ -4,7 +4,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { Orbitron } from 'next/font/google';
 
-
 const orbitron = Orbitron({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800', '900'],
@@ -16,7 +15,6 @@ export const revalidate = 0;
 type Props = {
   params: Promise<{ slug: string }>;
 };
-
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -38,7 +36,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
 
-  
   const { data: category } = await supabase
     .from('categories')
     .select('id, title')
@@ -49,8 +46,6 @@ export default async function CategoryPage({ params }: Props) {
     notFound();
   }
 
-  
-  
   const { data: posts } = await supabase
     .from('posts')
     .select('id, title, excerpt, created_at, image_url, author')
@@ -59,11 +54,11 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
-      { 
-}
       <header className="py-16 px-6 text-center border-b border-neutral-900 mb-0 relative bg-[#0a0a0a]">
          <div className="absolute top-8 left-8">
-            <Link href="/" className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-3 py-2">
+            { 
+}
+            <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
             ← Return to Index
             </Link>
         </div>
@@ -76,8 +71,6 @@ export default async function CategoryPage({ params }: Props) {
         </p>
       </header>
 
-      { 
-}
       <section className="flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full pt-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
           {posts?.map((post) => {
@@ -86,10 +79,8 @@ export default async function CategoryPage({ params }: Props) {
             });
             
             const hasExcerpt = post.excerpt && post.excerpt.trim().length > 0;
-            
             const categoryName = category.title;
             const titleLength = post.title.length;
-            
             
             let titleClass = "text-3xl leading-[0.9] tracking-tight"; 
             if (titleLength > 80) {
@@ -107,13 +98,9 @@ export default async function CategoryPage({ params }: Props) {
                   href={`/post/${post.id}`} 
                   className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
                 >
-                  { 
-}
                   {post.author && (
                     <div className="absolute top-0 left-0 z-20">
                       <object>
-                        { 
-}
                         <Link 
                             href={`/author/${post.author}`}
                             className="block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-pointer hover:bg-white transition-colors"
@@ -167,8 +154,6 @@ export default async function CategoryPage({ params }: Props) {
           })}
         </div>
 
-        { 
-}
         {(!posts || posts.length === 0) && (
             <div className="text-center py-20 border border-dashed border-neutral-900 mt-10">
                 <p className="font-mono text-neutral-600 uppercase tracking-widest text-xs">
