@@ -60,8 +60,7 @@ export default async function PostPage({ params }: Props) {
   const { id } = await params;
   const { data: post } = await supabase
     .from('posts')
-    .select('*, views') 
-    .eq('id', id)
+    .select('*, views, categories(title, slug)')    .eq('id', id)
     .single();
   
   if (!post) {

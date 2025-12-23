@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import Link from 'next/link';
+import Image from 'next/image'; 
 import HeroSlider from '@/components/heroslider';
 import { Orbitron } from 'next/font/google';
 
@@ -40,13 +41,13 @@ export default async function Home({
   const { data: { user } } = await supabase.auth.getUser()
   const { data: sliderPosts } = await supabase
     .from('posts')
-    .select('id, title, excerpt, content, image_url, author, category, created_at, views')
+    .select('id, title, excerpt, content, image_url, author, category, created_at, views, categories(title, slug)')
     .eq('is_featured', true) 
     .order('created_at', { ascending: false })
     .limit(5);
   const { data: posts, count } = await supabase
     .from('posts')
-    .select('id, title, excerpt, content, image_url, author, created_at, category, views', { count: 'exact' }) 
+    .select('id, title, excerpt, content, image_url, author, created_at, category, views, categories(title, slug)', { count: 'exact' }) 
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -57,26 +58,61 @@ export default async function Home({
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       
-      <header className="border-b border-neutral-900 mb-0">
-        <div className="max-w-[1750px] mx-auto relative py-12 px-6 text-center">
-            
-            <div className="absolute right-6 top-6 md:top-auto md:bottom-12">
-                <Link 
-                    href="/admin" 
-                    className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
-                >
-                    {user ? '[ CONTROL PANEL ]' : '[ LOGIN ]'}
-                </Link>
-            </div>
 
-            <h1 className={`${orbitron.className} text-5xl md:text-6xl font-bold tracking-normal mb-2 lowercase select-none cursor-default text-white`}>
-            cataclysm
-            </h1>
-            <p className="font-mono text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default">
-            ACCD and Layer-culture research
-            </p>
+<header className="border-b border-neutral-900 mb-0 relative overflow-hidden">
+    
+    { 
+}
+    <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
+        <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
+            <Image 
+                src="/logo.png" 
+                alt="" 
+                fill
+                className="object-contain"
+            />
         </div>
-      </header>
+    </div>
+
+    { 
+}
+    <div className="max-w-[1750px] mx-auto relative py-12 px-6 text-center z-10">
+        
+        { 
+}
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20 pointer-events-none select-none">
+            { 
+}
+            <Image 
+                src="/logo.png" 
+                alt="Cataclysm Logo"
+                width={200} 
+                height={200} 
+                className="w-10 h-10 md:w-14 md:h-14 object-contain opacity-90"
+            />
+        </div>
+
+        { 
+}
+        <div className="absolute right-6 top-6 md:top-auto md:bottom-12 z-20">
+            <Link 
+                href="/admin" 
+                className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
+            >
+                {user ? '[ CONTROL PANEL ]' : '[ LOGIN ]'}
+            </Link>
+        </div>
+
+        { 
+}
+        <h1 className={`${orbitron.className} relative text-5xl md:text-6xl font-bold tracking-normal mb-2 lowercase select-none cursor-default text-white drop-shadow-2xl`}>
+            cataclysm
+        </h1>
+        <p className="relative font-mono text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default">
+            ACCD and Layer-culture research
+        </p>
+    </div>
+</header>
 
       {sliderPosts && sliderPosts.length > 0 && (
         <HeroSlider posts={sliderPosts} />
@@ -97,7 +133,10 @@ export default async function Home({
               day: 'numeric', month: 'long', year: 'numeric'
             });
             const hasExcerpt = post.excerpt && post.excerpt.trim().length > 0;
-            const categoryName = post.category || 'POST';
+            
+            const catData = Array.isArray(post.categories) ? post.categories[0] : post.categories;
+            const categoryName = catData?.title || post.category || 'POST';
+            
             const titleLength = post.title.length;
             const viewsCount = post.views || 0; 
 
@@ -146,13 +185,21 @@ export default async function Home({
                 </Link>
 
                 <div className="p-6 flex flex-col flex-grow">
-                  {/* МЕТАДАННЫЕ КАРТОЧКИ */}
                   <div className="flex items-center text-xs font-mono uppercase tracking-widest gap-2 mb-3 w-full text-neutral-500">
                     <span>{date}</span>
                     <span className="text-neutral-700">/</span>
-                    <span className="text-neutral-400 font-semibold">{categoryName}</span>
                     
-                    {/* --- ОТОБРАЖЕНИЕ ПРОСМОТРОВ --- */}
+                    {catData ? (
+                        <Link 
+                            href={`/category/${catData.slug}`} 
+                            className="text-neutral-400 hover:text-white transition-colors font-semibold z-30 relative"
+                        >
+                            {catData.title}
+                        </Link>
+                    ) : (
+                        <span className="text-neutral-400 font-semibold">{categoryName}</span>
+                    )}
+                    
                     <span className="text-neutral-700 ml-auto md:ml-0">/</span>
                     <span className="flex items-center gap-1 text-neutral-400" title="Просмотры">
                       <svg 
@@ -168,7 +215,6 @@ export default async function Home({
                       </svg>
                       {viewsCount}
                     </span>
-                    {/* ----------------------------- */}
                     
                   </div>
 
