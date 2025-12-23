@@ -107,25 +107,11 @@ export default async function CategoryPage({ params }: Props) {
                 key={post.id} 
                 className="group flex flex-col bg-[#111] border border-neutral-900 hover:border-neutral-700 transition-colors duration-300 relative"
               >
+                {/* 1. Ссылка только на картинку (чтобы не было вложенных ссылок) */}
                 <Link 
                   href={`/post/${post.id}`} 
                   className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
                 >
-                  {post.author && (
-                    <div className="absolute top-0 left-0 z-20">
-                      <object>
-                        <Link 
-                            href={`/author/${post.author}`}
-                            className="block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-pointer hover:bg-white transition-colors"
-                        >
-                          <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
-                            {post.author}
-                          </span>
-                        </Link>
-                      </object>
-                    </div>
-                  )}
-
                   {post.image_url ? (
                     <img 
                       src={post.image_url} 
@@ -138,6 +124,28 @@ export default async function CategoryPage({ params }: Props) {
                     </div>
                   )}
                 </Link>
+
+                {/* 2. Блок авторов вынесен отдельно и позиционирован абсолютно поверх картинки */}
+                {post.author && (
+                    <div className="absolute top-0 left-0 z-20 flex flex-wrap max-w-full pointer-events-none">
+                        {post.author.split(',').map((authorName: string, index: number) => {
+                            const cleanName = authorName.trim();
+                            if (!cleanName) return null;
+
+                            return (
+                                <Link 
+                                    key={index}
+                                    href={`/author/${cleanName}`}
+                                    className="pointer-events-auto block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-pointer hover:bg-white transition-colors"
+                                >
+                                  <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
+                                    {cleanName}
+                                  </span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
 
                 <div className="p-6 flex flex-col flex-grow">
                   <div className="flex items-center text-xs font-mono uppercase tracking-widest gap-2 mb-3 w-full text-neutral-500">
