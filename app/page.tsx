@@ -88,7 +88,7 @@ export default async function Home({
                 alt="Cataclysm Logo"
                 width={200} 
                 height={200} 
-                className="w-12 h-12 md:w-14 md:h-14 object-contain opacity-90"
+                className="w-10 h-10 md:w-14 md:h-14 object-contain opacity-90"
             />
         </div>
 
@@ -121,7 +121,7 @@ export default async function Home({
       <section className={`flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full ${sliderPosts && sliderPosts.length > 0 ? 'pt-0 md:pt-4' : 'pt-16'}`}>
         <div className="mb-10 flex items-center gap-4 select-none">
              <span className="h-[1px] bg-neutral-900 flex-grow"></span>
-             <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+             <span className="font-mono text-[12px] uppercase tracking-widest text-neutral-500">
                Latest Articles
              </span>
              <span className="h-[1px] bg-neutral-900 flex-grow"></span>
@@ -253,7 +253,7 @@ export default async function Home({
             </span>
           )}
 
-          <span className="text-neutral-600 select-none">
+          <span className="text-neutral-600 select-none text-sm">
             Page {currentPage} / {totalPages}
           </span>
 
