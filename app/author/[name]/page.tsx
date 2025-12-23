@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Orbitron } from 'next/font/google';
 
 const orbitron = Orbitron({
@@ -34,19 +35,33 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
-      <header className="py-16 px-6 text-center border-b border-neutral-900 mb-0 relative bg-[#0a0a0a]">
-         <div className="absolute top-8 left-8">
+      <header className="py-16 px-6 text-center border-b border-neutral-900 mb-0 relative bg-[#0a0a0a] overflow-hidden">
+        
+        <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
+            <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
+                <Image 
+                    src="/logo.png" 
+                    alt="" 
+                    fill
+                    className="object-contain"
+                />
+            </div>
+        </div>
+
+         <div className="absolute top-8 left-8 z-20">
             <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
             ← Return to Index
             </Link>
         </div>
 
-        <h1 className={`${orbitron.className} text-4xl md:text-6xl font-bold tracking-normal mb-2 text-white`}>
-          {authorName}
-        </h1>
-        <p className="font-mono text-[13px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
-          Subject Archives // Total Records: {posts?.length || 0}
-        </p>
+        <div className="relative z-10">
+            <h1 className={`${orbitron.className} text-4xl md:text-6xl font-bold tracking-normal mb-2 text-white`}>
+            {authorName}
+            </h1>
+            <p className="font-mono text-[13px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
+            Subject Archives // Total Records: {posts?.length || 0}
+            </p>
+        </div>
       </header>
 
       <section className="flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full pt-16">
@@ -111,7 +126,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
                     <span>{date}</span>
                     <span className="text-neutral-700">/</span>
                     
-                    {/* ОБНОВЛЕННЫЙ СТИЛЬ ССЫЛКИ КАТЕГОРИИ */}
                     {categorySlug ? (
                       <Link 
                         href={`/category/${categorySlug}`}
