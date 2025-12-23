@@ -24,7 +24,9 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       <header className="py-16 px-6 text-center border-b border-neutral-900 mb-0 relative bg-[#0a0a0a]">
          <div className="absolute top-8 left-8">
-            <Link href="/" className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-3 py-2">
+            { 
+}
+            <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
             ← Return to Index
             </Link>
         </div>
@@ -33,7 +35,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
           {authorName}
         </h1>
         <p className="font-mono text-[13px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
-          Subject Archives // Total Records: {posts?.length || 0}
+          Subject Archives 
         </p>
       </header>
 
@@ -68,7 +70,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
                     <div className="absolute top-0 left-0 z-20">
                       <object>
                         <div className="block bg-black border-r border-b border-neutral-800 px-3 py-1 group/author cursor-default">
-                          {/* ИЗМЕНЕНИЕ ЗДЕСЬ: text-[10px] -> text-[12px] */}
                           <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest">
                             {post.author}
                           </span>
@@ -121,7 +122,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
         {(!posts || posts.length === 0) && (
             <div className="text-center py-20 border border-dashed border-neutral-900 mt-10">
                 <p className="font-mono text-neutral-600 uppercase tracking-widest text-xs">
-                    // No data found in archives for subject: {authorName}
+                    
                 </p>
                 <p className="text-[10px] text-neutral-700 mt-2 font-mono">
                     Check if database entry matches exactly (Case Sensitive).
