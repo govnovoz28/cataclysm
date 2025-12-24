@@ -88,11 +88,9 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
       onMouseLeave={() => setIsPaused(false)}
     >
       
-      {/* Background Layer */}
       <div className="absolute inset-0 flex items-center justify-center px-4">
         <div className="relative w-full max-w-[1500px] h-full flex items-center justify-center">
 
-            {/* Left Prev Image */}
             <div className="absolute left-0 md:left-[2%] w-[20%] md:w-[25%] h-[280px] md:h-[380px] z-10 transition-all duration-700 ease-in-out pointer-events-none hidden md:block">
                 {posts[prevIndex].image_url ? (
                 <img src={posts[prevIndex].image_url!} className="w-full h-full object-cover grayscale brightness-[0.25]" alt="" />
@@ -101,7 +99,6 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 )}
             </div>
 
-            {/* Right Next Image */}
             <div className="absolute right-0 md:right-[2%] w-[20%] md:w-[25%] h-[280px] md:h-[380px] z-10 transition-all duration-700 ease-in-out pointer-events-none hidden md:block">
                 {posts[nextIndex].image_url ? (
                 <img src={posts[nextIndex].image_url!} className="w-full h-full object-cover grayscale brightness-[0.25]" alt="" />
@@ -110,25 +107,22 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 )}
             </div>
 
-            {/* Main Center Card */}
             <div className="relative z-20 w-full md:w-[70%] max-w-[1000px] h-full md:h-[450px] 
                             bg-[#0a0a0a] border border-neutral-900 shadow-2xl 
                             flex flex-col md:flex-row transition-transform duration-500">
                 
-                {/* Navigation Buttons */}
-                <button onClick={(e) => {e.stopPropagation(); handlePrev()}} className="absolute -left-16 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center w-12 h-12 text-white transition-all duration-300 z-30 hover:scale-110 opacity-70 hover:opacity-100 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                <button onClick={(e) => {e.stopPropagation(); handlePrev()}} className="absolute left-2 md:-left-16 top-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 text-white transition-all duration-300 z-50 hover:scale-110 opacity-100 md:opacity-70 md:hover:opacity-100 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                 </button>
 
-                <button onClick={(e) => {e.stopPropagation(); handleNext()}} className="absolute -right-16 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center w-12 h-12 text-white transition-all duration-300 z-30 hover:scale-110 opacity-70 hover:opacity-100 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                <button onClick={(e) => {e.stopPropagation(); handleNext()}} className="absolute right-2 md:-right-16 top-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 text-white transition-all duration-300 z-50 hover:scale-110 opacity-100 md:opacity-70 md:hover:opacity-100 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                     </svg>
                 </button>
 
-                {/* Left Side: Image */}
                 <div className="relative w-full md:w-[45%] h-56 md:h-full overflow-hidden border-b md:border-b-0 md:border-r border-neutral-900 bg-neutral-900">
                 <Link href={`/post/${activePost.id}`} className="block w-full h-full group">
                     {activePost.image_url ? (
@@ -141,13 +135,10 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 </Link>
                 </div>
 
-                {/* Right Side: Content */}
                 <div className="w-full md:w-[55%] p-6 md:p-10 flex flex-col h-full bg-[#0a0a0a]">
                 
-                {/* Meta Header */}
                 <div className="flex justify-between items-start border-b border-neutral-900 pb-4 mb-4 shrink-0 gap-4">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2 min-w-0">
-                    {/* Category */}
                     {catData ? (
                         <Link 
                             href={`/category/${catData.slug}`}
@@ -161,10 +152,8 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                         </span>
                     )}
                     
-                    {/* Divider */}
                     <span className="text-neutral-700 text-sm font-mono">/</span>
                     
-                    {/* Authors */}
                     {activePost.author ? (
                         <div className="flex flex-wrap items-center z-30">
                             {activePost.author.split(',').map((authorName, index, arr) => {
@@ -199,7 +188,6 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                     {dateTech}
                 </span>
             </div>
-                {/* Title & Excerpt */}
                 <div className="flex-grow flex flex-col justify-start min-h-0 relative">
                     <Link href={`/post/${activePost.id}`} className="block w-full">
                         <div className={`flex items-start break-words w-full ${!hasExcerpt ? 'mb-0' : 'mb-3'}`}>
