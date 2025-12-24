@@ -146,22 +146,24 @@ export default async function PostPage({ params }: Props) {
           </header>
 
           <div className="
-            article-content
-            prose prose-invert prose-p:text-xl max-w-none 
-            font-serif text-[#d4d4d4] selection:bg-white selection:text-black
-            
-            prose-headings:font-serif prose-headings:font-medium prose-headings:text-white prose-headings:uppercase prose-headings:tracking-tight
-            prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
-            prose-h3:text-2xl
-            
-            prose-a:text-white prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-white transition-all
-            prose-p:leading-[1.8] prose-p:mb-6
-            [&_blockquote_p:not(:first-of-type)]:text-right
-            [&_blockquote_p:not(:first-of-type)]:mt-4
-            [&_blockquote_p:not(:first-of-type)]:text-[#e5e5e5]
-          ">
-             <div dangerouslySetInnerHTML={{ __html: post.content }} />
-          </div>
+                      article-content
+                      prose prose-invert prose-p:text-xl max-w-none 
+                      font-serif text-[#d4d4d4] selection:bg-white selection:text-black
+                      
+                      prose-headings:font-serif prose-headings:font-medium prose-headings:text-white prose-headings:uppercase prose-headings:tracking-tight
+                      prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
+                      prose-h3:text-2xl
+                      
+                      prose-a:text-white prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-white transition-all
+                      
+                      prose-p:leading-[1.6] 
+                      
+                      [&_blockquote_p:not(:first-of-type)]:text-right
+                      [&_blockquote_p:not(:first-of-type)]:mt-4
+                      [&_blockquote_p:not(:first-of-type)]:text-[#e5e5e5]
+                    ">
+                      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                    </div>
 
           <div className="mt-24 mb-12 flex justify-center items-center select-none opacity-80">
              <span className="font-mono text-sm text-neutral-600 tracking-[0.3em] scale-125">
