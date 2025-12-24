@@ -20,8 +20,8 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
     ],
     editorProps: {
       attributes: {
-        spellcheck: 'false', 
-        class: 'prose prose-invert prose-p:text-xl max-w-none font-serif text-neutral-300 focus:outline-none min-h-[50vh] p-4 prose-headings:font-bold prose-headings:text-white prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#e5e5e5] placeholder:text-neutral-700 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4 [&_blockquote_p:not(:first-of-type)]:text-[#e5e5e5]',
+        spellcheck: 'false',
+        class: 'prose prose-invert prose-p:text-xl max-w-none font-serif text-neutral-300 focus:outline-none min-h-[50vh] p-4 prose-headings:font-bold prose-headings:text-white prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#e5e5e5] placeholder:text-neutral-700 [&_blockquote_p]:text-left [&_blockquote_p:last-of-type]:text-right [&_blockquote_p:last-of-type]:mt-4 [&_blockquote_p:last-of-type]:text-[#e5e5e5]',
       },
     },
     immediatelyRender: false,
@@ -32,7 +32,7 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
   useEffect(() => {
     if (editor && content !== undefined) {
       if (editor.getHTML() !== content && !editor.isFocused) {
-          editor.commands.setContent(content)
+        editor.commands.setContent(content)
       }
     }
   }, [content, editor])
@@ -48,7 +48,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
   return (
     <div className="border border-neutral-800 bg-neutral-900/10 backdrop-blur-sm group transition-colors hover:border-neutral-700 rounded-md overflow-hidden">
       
-      {/* Панель инструментов */}
       <div className="flex gap-2 p-2 border-b border-neutral-800 bg-neutral-900/30 flex-wrap">
         <button
           type="button"
