@@ -53,11 +53,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
     editorProps: {
       attributes: {
         spellcheck: 'false',
-        // ИЗМЕНЕНИЯ ЗДЕСЬ:
-        // 1. [&_img]:rounded-none - убирает скругление у самой картинки
-        // 2. [&_img]:border-none - убирает рамку у картинки
-        // 3. [&_img]:max-h-[500px] - ограничивает высоту, чтобы картинка не была гигантской
-        // 4. [&_img]:w-auto [&_img]:mx-auto - центрирует картинку и сохраняет пропорции
         class: 'prose prose-invert prose-p:text-xl max-w-none font-serif text-neutral-300 focus:outline-none min-h-[50vh] p-4 prose-headings:font-bold prose-headings:text-white prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#e5e5e5] placeholder:text-neutral-700 [&_blockquote_p]:text-left [&_blockquote_p:last-of-type]:text-right [&_blockquote_p:last-of-type]:mt-4 [&_blockquote_p:last-of-type]:text-[#e5e5e5] [&_img]:rounded-none [&_img]:border-none [&_img]:my-6 [&_img]:max-h-[500px] [&_img]:w-auto [&_img]:mx-auto [&_img]:opacity-90 hover:[&_img]:opacity-100 [&_img]:transition-opacity',
       },
       handlePaste: (view, event, slice) => {
@@ -132,7 +127,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
   const activeStyle = "bg-white text-black border-white"
   const inactiveStyle = "bg-transparent text-neutral-500 border-transparent hover:text-white hover:border-neutral-800"
 
-  // ИЗМЕНЕНИЕ ЗДЕСЬ: убрал класс 'rounded-md' у родительского div и добавил 'rounded-none'
   return (
     <div className="border border-neutral-800 bg-neutral-900/10 backdrop-blur-sm group transition-colors hover:border-neutral-700 rounded-none overflow-hidden">
       
@@ -164,19 +158,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
           className={`${btnBase} ${editor.isActive('blockquote') ? activeStyle : inactiveStyle}`}
         >
           QUOTE
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            const url = window.prompt('URL изображения:')
-            if (url) {
-              editor.chain().focus().setImage({ src: url }).run()
-            }
-          }}
-          className={`${btnBase} ${inactiveStyle}`}
-        >
-          IMG
         </button>
       </div>
 
