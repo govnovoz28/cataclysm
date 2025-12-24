@@ -173,7 +173,10 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                                     const isLast = index === arr.length - 1;
 
                                     return (
-                                        <div key={index} className={`flex items-center ${!isLast ? 'mr-3' : ''}`}>
+                                        <div 
+                                            key={index} 
+                                            className={`flex items-center whitespace-nowrap ${!isLast ? 'mr-3' : ''}`}
+                                        >
                                             <Link 
                                                 href={`/author/${cleanName}`} 
                                                 className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors"
