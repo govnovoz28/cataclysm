@@ -58,33 +58,10 @@ export default async function Home({
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       
-      {/* 
-          ИЗМЕНЕНИЕ 1: mb-10 -> mb-8 
-          Немного уменьшили отступ снизу (с 40px до 32px)
-      */}
       <header className="border-b border-neutral-900 mb-8 relative overflow-hidden">
           
-          <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
-              <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
-                  <Image 
-                      src="/logo.png" 
-                      alt="" 
-                      fill
-                      className="object-contain"
-                  />
-              </div>
-          </div>
-
-          {/* 
-              ИЗМЕНЕНИЕ 2: py-5 -> py-6
-              Немного увеличили высоту шапки (с 20px до 24px padding)
-          */}
-          <div className="max-w-[1750px] mx-auto relative py-6 px-6 text-center z-10">
+          <div className="max-w-[1750px] mx-auto relative py-6 px-6 z-10">
               
-              {/* 
-                  ИЗМЕНЕНИЕ 3: md:bottom-5 -> md:bottom-6
-                  Скорректировали кнопку логина под новый padding
-              */}
               <div className="absolute right-6 top-6 md:top-auto md:bottom-6 z-20">
                   <Link 
                       href="/admin" 
@@ -94,9 +71,16 @@ export default async function Home({
                   </Link>
               </div>
 
-              <div className="flex items-baseline justify-center gap-0.5 mb-2 select-none">
+              {/* items-end гарантирует, что низ логотипа и низ текста на одной линии */}
+              <div className="flex items-end justify-center gap-4 select-none">
                   
-                  <div className="relative w-12 h-12 md:w-14 md:h-14 flex-shrink-0 top-1 md:top-2 z-10">
+                  {/* 
+                      ИЗМЕНЕНИЕ РАЗМЕРА:
+                      Было: w-20 h-20 md:w-28 md:h-28 (слишком большой)
+                      Стало: w-12 h-12 md:w-[74px] md:h-[74px]
+                      74px - это примерно высота заголовка + подписи + отступы.
+                  */}
+                  <div className="relative w-12 h-12 md:w-[74px] md:h-[74px] flex-shrink-0 z-10 mb-[2px]">
                        <Image 
                           src="/logo.png" 
                           alt="Cataclysm Logo"
@@ -105,14 +89,22 @@ export default async function Home({
                       />
                   </div>
 
-                  <h1 className={`${orbitron.className} relative text-5xl md:text-6xl font-bold tracking-normal lowercase cursor-default text-white drop-shadow-2xl`}>
-                      cataclysm
-                  </h1>
+                  <div className="flex flex-col items-center justify-end">
+                      {/* 
+                          ИЗМЕНЕНИЕ LINE-HEIGHT:
+                          leading-[0.85] (было leading-none) — "сжимает" высоту шрифта, 
+                          чтобы верхняя граница букв совпала с верхом логотипа.
+                      */}
+                      <h1 className={`${orbitron.className} text-5xl md:text-6xl font-bold tracking-normal lowercase cursor-default text-white drop-shadow-2xl leading-[0.85] mb-1 text-center`}>
+                          cataclysm
+                      </h1>
+
+                      <p className="font-mono text-[11px] md:text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default text-center">
+                          ACCD and Layer-culture research
+                      </p>
+                  </div>
               </div>
 
-              <p className="relative font-mono text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default">
-                  ACCD and Layer-culture research
-              </p>
           </div>
       </header>
 
