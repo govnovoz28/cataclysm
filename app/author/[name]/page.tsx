@@ -60,7 +60,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
                 {authorName}
                 </h1>
                 <p className="font-mono text-[12px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
-                Subject Archives // Total Records: {posts?.length || 0}
+                Subject Contributions // Total Records: {posts?.length || 0}
                 </p>
             </div>
         </div>
@@ -178,3 +178,4 @@ export default async function AuthorPage({ params }: { params: Promise<{ name: s
     </div>
   );
 }
+
