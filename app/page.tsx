@@ -59,10 +59,10 @@ export default async function Home({
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       
       {/* 
-          ИЗМЕНЕНИЕ 1: mb-0 -> mb-10 
-          Добавлен нижний отступ, чтобы отодвинуть карусель от уменьшенной шапки 
+          ИЗМЕНЕНИЕ 1: mb-10 -> mb-8 
+          Немного уменьшили отступ снизу (с 40px до 32px)
       */}
-      <header className="border-b border-neutral-900 mb-10 relative overflow-hidden">
+      <header className="border-b border-neutral-900 mb-8 relative overflow-hidden">
           
           <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
               <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
@@ -76,16 +76,16 @@ export default async function Home({
           </div>
 
           {/* 
-              ИЗМЕНЕНИЕ 2: py-12 -> py-5
-              Уменьшены вертикальные отступы внутри шапки, чтобы сделать её ниже
+              ИЗМЕНЕНИЕ 2: py-5 -> py-6
+              Немного увеличили высоту шапки (с 20px до 24px padding)
           */}
-          <div className="max-w-[1750px] mx-auto relative py-5 px-6 text-center z-10">
+          <div className="max-w-[1750px] mx-auto relative py-6 px-6 text-center z-10">
               
               {/* 
-                  ИЗМЕНЕНИЕ 3: md:bottom-12 -> md:bottom-5
-                  Скорректировано положение кнопки входа под новую высоту
+                  ИЗМЕНЕНИЕ 3: md:bottom-5 -> md:bottom-6
+                  Скорректировали кнопку логина под новый padding
               */}
-              <div className="absolute right-6 top-6 md:top-auto md:bottom-5 z-20">
+              <div className="absolute right-6 top-6 md:top-auto md:bottom-6 z-20">
                   <Link 
                       href="/admin" 
                       className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
