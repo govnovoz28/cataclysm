@@ -104,7 +104,7 @@ export default async function Home({
         <div className="mb-10 flex items-center gap-4 select-none">
              <span className="h-[1px] bg-neutral-900 flex-grow"></span>
              <span className="font-mono text-[12px] uppercase tracking-widest text-neutral-500">
-               Latest Articles
+               Publications
              </span>
              <span className="h-[1px] bg-neutral-900 flex-grow"></span>
         </div>
