@@ -267,17 +267,6 @@ export default async function Home({
         ) : (
           <div className="relative w-full min-h-[500px]">
             
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0">
-                 <div className="relative w-[300px] h-[300px] md:w-[600px] md:h-[600px] opacity-[0.02] grayscale">
-                     <Image
-                         src="/logo.png"
-                         alt="System Void"
-                         fill
-                         className="object-contain"
-                     />
-                 </div>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 relative z-10">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex flex-col border border-neutral-900 h-full min-h-[450px]">
