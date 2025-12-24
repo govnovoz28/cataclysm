@@ -74,16 +74,6 @@ export default async function Home({
 
     <div className="max-w-[1750px] mx-auto relative py-12 px-6 text-center z-10">
         
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20 pointer-events-none select-none">
-            <Image 
-                src="/logo.png" 
-                alt="Cataclysm Logo"
-                width={200} 
-                height={200} 
-                className="w-10 h-10 md:w-12 md:h-12 object-contain opacity-90"
-            />
-        </div>
-
         <div className="absolute right-6 top-6 md:top-auto md:bottom-12 z-20">
             <Link 
                 href="/admin" 
@@ -93,9 +83,22 @@ export default async function Home({
             </Link>
         </div>
 
-        <h1 className={`${orbitron.className} relative text-5xl md:text-6xl font-bold tracking-normal mb-2 lowercase select-none cursor-default text-white drop-shadow-2xl`}>
-            cataclysm
-        </h1>
+        <div className="flex items-baseline justify-center gap-0.5 mb-2 select-none">
+            
+            <div className="relative w-12 h-12 md:w-14 md:h-14 flex-shrink-0 top-1 md:top-2 z-10">
+                 <Image 
+                    src="/logo.png" 
+                    alt="Cataclysm Logo"
+                    fill
+                    className="object-contain opacity-100"
+                />
+            </div>
+
+            <h1 className={`${orbitron.className} relative text-5xl md:text-6xl font-bold tracking-normal lowercase cursor-default text-white drop-shadow-2xl`}>
+                cataclysm
+            </h1>
+        </div>
+
         <p className="relative font-mono text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default">
             ACCD and Layer-culture research
         </p>
