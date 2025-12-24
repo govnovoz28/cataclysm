@@ -339,7 +339,7 @@ export default function AdminPage() {
                 <div className="text-xs font-mono text-white animate-pulse">ЗАГРУЗКА...</div>
               ) : imageUrl ? (
                  <div className="relative group">
-                    <img src={imageUrl} alt="Preview" className="h-48 mx-auto object-cover border border-neutral-700" />
+                    <img src={imageUrl} alt="Preview" className="h-48 mx-auto object-cover" />
                     <div className="text-[10px] font-mono text-neutral-400 mt-2">НАЖМИТЕ ДЛЯ ЗАМЕНЫ</div>
                  </div>
               ) : (
