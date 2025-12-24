@@ -145,60 +145,60 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 <div className="w-full md:w-[55%] p-6 md:p-10 flex flex-col h-full bg-[#0a0a0a]">
                 
                 {/* Meta Header */}
-                <div className="flex justify-between items-center border-b border-neutral-900 pb-4 mb-4 shrink-0">
-                    <div className="flex items-center gap-3">
-                        {/* Category */}
-                        {catData ? (
-                            <Link 
-                                href={`/category/${catData.slug}`}
-                                className="text-sm font-mono font-bold text-white uppercase tracking-widest bg-neutral-900 px-3 py-1 hover:bg-neutral-800 transition-colors z-30"
-                            >
-                                {catData.title}
-                            </Link>
-                        ) : (
-                            <span className="text-sm font-mono font-bold text-white uppercase tracking-widest bg-neutral-900 px-3 py-1">
-                                {activePost.category || 'SYSTEM'}
-                            </span>
-                        )}
-                        {/* Divider */}
-                        <span className="text-neutral-700 text-sm font-mono">/</span>
-                        
-                        {/* Authors - UPDATED LOGIC HERE */}
-                        {activePost.author ? (
-                            <div className="flex flex-wrap items-center z-30">
-                                {activePost.author.split(',').map((authorName, index, arr) => {
-                                    const cleanName = authorName.trim();
-                                    if (!cleanName) return null;
-                                    
-                                    const isLast = index === arr.length - 1;
+                <div className="flex justify-between items-start border-b border-neutral-900 pb-4 mb-4 shrink-0 gap-4">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 min-w-0">
+                    {/* Category */}
+                    {catData ? (
+                        <Link 
+                            href={`/category/${catData.slug}`}
+                            className="text-sm font-mono font-bold text-white uppercase tracking-widest bg-neutral-900 px-3 py-1 hover:bg-neutral-800 transition-colors z-30 whitespace-nowrap"
+                        >
+                            {catData.title}
+                        </Link>
+                    ) : (
+                        <span className="text-sm font-mono font-bold text-white uppercase tracking-widest bg-neutral-900 px-3 py-1 whitespace-nowrap">
+                            {activePost.category || 'SYSTEM'}
+                        </span>
+                    )}
+                    
+                    {/* Divider */}
+                    <span className="text-neutral-700 text-sm font-mono">/</span>
+                    
+                    {/* Authors */}
+                    {activePost.author ? (
+                        <div className="flex flex-wrap items-center z-30">
+                            {activePost.author.split(',').map((authorName, index, arr) => {
+                                const cleanName = authorName.trim();
+                                if (!cleanName) return null;
+                                
+                                const isLast = index === arr.length - 1;
 
-                                    return (
-                                        <div 
-                                            key={index} 
-                                            className={`flex items-center whitespace-nowrap ${!isLast ? 'mr-3' : ''}`}
+                                return (
+                                    <div key={index} className={`flex items-center whitespace-nowrap ${!isLast ? 'mr-3' : ''}`}>
+                                        <Link 
+                                            href={`/author/${cleanName}`} 
+                                            className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors"
+                                            onClick={(e) => e.stopPropagation()} 
                                         >
-                                            <Link 
-                                                href={`/author/${cleanName}`} 
-                                                className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest hover:text-white transition-colors"
-                                                onClick={(e) => e.stopPropagation()} 
-                                            >
-                                                {cleanName}
-                                            </Link>
-                                            {!isLast && (
-                                                <span className="text-neutral-500 text-sm font-mono font-bold">,</span>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ) : (
-                            <span className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest">UNKNOWN</span>
-                        )}
+                                            {cleanName}
+                                        </Link>
+                                        {!isLast && (
+                                            <span className="text-neutral-500 text-sm font-mono font-bold">,</span>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <span className="text-sm font-mono font-bold text-neutral-400 uppercase tracking-widest">UNKNOWN</span>
+                    )}
 
-                    </div>
-                    <span className="text-sm font-mono text-neutral-500 tracking-widest">{dateTech}</span>
                 </div>
 
+                <span className="text-sm font-mono text-neutral-500 tracking-widest whitespace-nowrap shrink-0 mt-1 text-right">
+                    {dateTech}
+                </span>
+            </div>
                 {/* Title & Excerpt */}
                 <div className="flex-grow flex flex-col justify-start min-h-0 relative">
                     <Link href={`/post/${activePost.id}`} className="block w-full">
