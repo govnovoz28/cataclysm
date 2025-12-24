@@ -69,17 +69,13 @@ export default async function CategoryPage({ params }: Props) {
         </div>
 
         <div className="max-w-[1750px] mx-auto relative py-6 px-6 text-center z-10">
-            <div className="absolute left-6 top-6 md:top-auto md:bottom-6 z-20">
+            <div className="relative text-left mb-4 md:mb-0 md:absolute md:left-6 md:top-auto md:bottom-6 z-20">
                 <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
                 ← Return to Index
                 </Link>
             </div>
 
             <div className="relative z-10 pt-1 md:pt-2">
-                {/* 
-                    ИЗМЕНЕНИЕ: text-4xl md:text-6xl -> text-3xl md:text-5xl 
-                    Уменьшен размер шрифта названия категории
-                */}
                 <h1 className={`${orbitron.className} text-3xl md:text-5xl font-bold tracking-normal mb-1 text-white uppercase leading-none`}>
                 {category.title}
                 </h1>
