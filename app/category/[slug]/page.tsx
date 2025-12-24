@@ -80,7 +80,7 @@ export default async function CategoryPage({ params }: Props) {
                 {category.title}
                 </h1>
                 <p className="font-mono text-[12px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
-                Category Archives 
+                Category Materials 
                 </p>
             </div>
         </div>
@@ -188,3 +188,4 @@ export default async function CategoryPage({ params }: Props) {
     </div>
   );
 }
+
