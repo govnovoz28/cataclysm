@@ -59,29 +59,13 @@ export default async function Home({
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       
       <header className="border-b border-neutral-900 mb-8 relative overflow-hidden">
-          
-          <div className="max-w-[1750px] mx-auto relative py-6 px-6 z-10">
+          <div className="max-w-[1750px] mx-auto relative py-6 px-6 z-10 flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-end gap-y-4 md:gap-y-0">
               
-              <div className="absolute right-6 top-6 md:top-auto md:bottom-6 z-20">
-                  <Link 
-                      href="/admin" 
-                      className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
-                  >
-                      {user ? '[ CONTROL PANEL ]' : '[ LOGIN ]'}
-                  </Link>
-              </div>
+              <div className="hidden md:block"></div>
 
-              {/* items-end гарантирует, что низ логотипа и низ текста на одной линии */}
-              <div className="flex items-end justify-center gap-4 select-none">
-                  
-                  {/* 
-                      ИЗМЕНЕНИЕ РАЗМЕРА:
-                      Было: w-20 h-20 md:w-28 md:h-28 (слишком большой)
-                      Стало: w-12 h-12 md:w-[74px] md:h-[74px]
-                      74px - это примерно высота заголовка + подписи + отступы.
-                  */}
+              <div className="flex items-end justify-center gap-4 select-none w-full md:w-auto md:order-2">
                   <div className="relative w-12 h-12 md:w-[74px] md:h-[74px] flex-shrink-0 z-10 mb-[2px]">
-                       <Image 
+                          <Image 
                           src="/logo.png" 
                           alt="Cataclysm Logo"
                           fill
@@ -90,11 +74,6 @@ export default async function Home({
                   </div>
 
                   <div className="flex flex-col items-center justify-end">
-                      {/* 
-                          ИЗМЕНЕНИЕ LINE-HEIGHT:
-                          leading-[0.85] (было leading-none) — "сжимает" высоту шрифта, 
-                          чтобы верхняя граница букв совпала с верхом логотипа.
-                      */}
                       <h1 className={`${orbitron.className} text-5xl md:text-6xl font-bold tracking-normal lowercase cursor-default text-white drop-shadow-2xl leading-[0.85] mb-1 text-center`}>
                           cataclysm
                       </h1>
@@ -103,6 +82,15 @@ export default async function Home({
                           ACCD and Layer-culture research
                       </p>
                   </div>
+              </div>
+
+              <div className="flex justify-end w-full md:w-auto order-1 md:order-3 md:mb-[6px] z-20">
+                  <Link 
+                      href="/admin" 
+                      className={`text-sm font-mono uppercase tracking-widest transition-colors whitespace-nowrap ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
+                  >
+                      {user ? '[ CONTROL PANEL ]' : '[ LOGIN ]'}
+                  </Link>
               </div>
 
           </div>
