@@ -58,52 +58,63 @@ export default async function Home({
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       
+      {/* 
+          ИЗМЕНЕНИЕ 1: mb-0 -> mb-10 
+          Добавлен нижний отступ, чтобы отодвинуть карусель от уменьшенной шапки 
+      */}
+      <header className="border-b border-neutral-900 mb-10 relative overflow-hidden">
+          
+          <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
+              <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
+                  <Image 
+                      src="/logo.png" 
+                      alt="" 
+                      fill
+                      className="object-contain"
+                  />
+              </div>
+          </div>
 
-<header className="border-b border-neutral-900 mb-0 relative overflow-hidden">
-    
-    <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
-        <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
-            <Image 
-                src="/logo.png" 
-                alt="" 
-                fill
-                className="object-contain"
-            />
-        </div>
-    </div>
+          {/* 
+              ИЗМЕНЕНИЕ 2: py-12 -> py-5
+              Уменьшены вертикальные отступы внутри шапки, чтобы сделать её ниже
+          */}
+          <div className="max-w-[1750px] mx-auto relative py-5 px-6 text-center z-10">
+              
+              {/* 
+                  ИЗМЕНЕНИЕ 3: md:bottom-12 -> md:bottom-5
+                  Скорректировано положение кнопки входа под новую высоту
+              */}
+              <div className="absolute right-6 top-6 md:top-auto md:bottom-5 z-20">
+                  <Link 
+                      href="/admin" 
+                      className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
+                  >
+                      {user ? '[ CONTROL PANEL ]' : '[ LOGIN ]'}
+                  </Link>
+              </div>
 
-    <div className="max-w-[1750px] mx-auto relative py-12 px-6 text-center z-10">
-        
-        <div className="absolute right-6 top-6 md:top-auto md:bottom-12 z-20">
-            <Link 
-                href="/admin" 
-                className={`text-sm font-mono uppercase tracking-widest transition-colors ${user ? 'text-green-500 hover:text-green-400' : 'text-neutral-600 hover:text-white'}`}
-            >
-                {user ? '[ CONTROL PANEL ]' : '[ LOGIN ]'}
-            </Link>
-        </div>
+              <div className="flex items-baseline justify-center gap-0.5 mb-2 select-none">
+                  
+                  <div className="relative w-12 h-12 md:w-14 md:h-14 flex-shrink-0 top-1 md:top-2 z-10">
+                       <Image 
+                          src="/logo.png" 
+                          alt="Cataclysm Logo"
+                          fill
+                          className="object-contain opacity-100"
+                      />
+                  </div>
 
-        <div className="flex items-baseline justify-center gap-0.5 mb-2 select-none">
-            
-            <div className="relative w-12 h-12 md:w-14 md:h-14 flex-shrink-0 top-1 md:top-2 z-10">
-                 <Image 
-                    src="/logo.png" 
-                    alt="Cataclysm Logo"
-                    fill
-                    className="object-contain opacity-100"
-                />
-            </div>
+                  <h1 className={`${orbitron.className} relative text-5xl md:text-6xl font-bold tracking-normal lowercase cursor-default text-white drop-shadow-2xl`}>
+                      cataclysm
+                  </h1>
+              </div>
 
-            <h1 className={`${orbitron.className} relative text-5xl md:text-6xl font-bold tracking-normal lowercase cursor-default text-white drop-shadow-2xl`}>
-                cataclysm
-            </h1>
-        </div>
-
-        <p className="relative font-mono text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default">
-            ACCD and Layer-culture research
-        </p>
-    </div>
-</header>
+              <p className="relative font-mono text-[13px] text-[var(--muted)] tracking-[0.2em] uppercase select-none cursor-default">
+                  ACCD and Layer-culture research
+              </p>
+          </div>
+      </header>
 
       {sliderPosts && sliderPosts.length > 0 && (
         <HeroSlider posts={sliderPosts} />
