@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-// ВАЖНО: Импортируем createBrowserClient для работы с куками
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -21,7 +20,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  // ВАЖНО: Создаем клиент здесь. Он автоматически запишет куки при входе.
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -41,7 +39,6 @@ export default function LoginPage() {
       setErrorMsg('ACCESS_DENIED: INVALID_CREDENTIALS')
       setLoading(false)
     } else {
-      // Обновляем роутер, чтобы Middleware увидел новые куки
       router.refresh()
       router.push('/admin')
     }
@@ -50,7 +47,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0a0a0a] text-[#e5e5e5] relative overflow-hidden font-mono selection:bg-white selection:text-black">
       
-      {/* ФОН */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.07]" 
            style={{ 
              backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', 
@@ -58,12 +54,9 @@ export default function LoginPage() {
            }}>
       </div>
       
-      {/* Кнопка "Назад" */}
       <div className="absolute top-8 left-8 z-20">
-        <Link href="/" className="text-[14px] uppercase tracking-widest text-neutral-500 hover:text-white transition-colors flex items-center gap-2">
-          <span>[</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
-          <span>ABORT SEQUENCE ]</span>
+        <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
+          ← Abort Sequence
         </Link>
       </div>
 
@@ -79,7 +72,6 @@ export default function LoginPage() {
         </div>
 
         <div className="relative border border-neutral-900 bg-[#0a0a0a]/90 backdrop-blur-sm p-10 shadow-2xl">
-            {/* Уголки */}
             <div className="absolute -top-[1px] -left-[1px] w-2 h-2 border-t border-l border-neutral-500"></div>
             <div className="absolute -top-[1px] -right-[1px] w-2 h-2 border-t border-r border-neutral-500"></div>
             <div className="absolute -bottom-[1px] -left-[1px] w-2 h-2 border-b border-l border-neutral-500"></div>
@@ -87,7 +79,6 @@ export default function LoginPage() {
             
             <form onSubmit={handleLogin} className="space-y-10">
             
-            {/* EMAIL */}
             <div className="group relative">
               <label className="absolute -top-3 left-0 text-[9px] font-bold text-neutral-500 uppercase tracking-widest bg-[#0a0a0a] pr-2 group-focus-within:text-white transition-colors">
                 // Identity
@@ -104,7 +95,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* PASSWORD */}
             <div className="group relative">
               <label className="absolute -top-3 left-0 text-[9px] font-bold text-neutral-500 uppercase tracking-widest bg-[#0a0a0a] pr-2 group-focus-within:text-white transition-colors">
                 // Key
