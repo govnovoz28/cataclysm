@@ -2,9 +2,8 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}", // Основная папка
-    "./components/**/*.{js,ts,jsx,tsx,mdx}", // Компоненты
-    // Папку ./pages можно убрать, если у тебя используется App Router (папка app)
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -17,10 +16,9 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        border: "var(--border)", // Убедись, что переменная --border есть в globals.css
-        muted: "var(--muted)",   // Убедись, что переменная --muted есть в globals.css
+        border: "var(--border)",
+        muted: "var(--muted)",
       },
-      // Настройки typography оставляем, они полезны для статей
       typography: {
         DEFAULT: {
           css: {
@@ -38,6 +36,18 @@ const config: Config = {
             '--tw-prose-code': 'var(--foreground)',
             '--tw-prose-pre-code': 'var(--background)',
             '--tw-prose-pre-bg': 'var(--foreground)',
+
+            // 👇 ДОБАВЛЕНО: Уменьшаем отступы между параграфами
+            p: {
+              marginTop: '0.5em', 
+              marginBottom: '0.5em',
+              lineHeight: '1.6', // Можно также немного поджать высоту строки, если нужно
+            },
+            // 👇 ДОБАВЛЕНО: Уменьшаем отступы для заголовков, чтобы они не висели далеко
+            'h1, h2, h3, h4': {
+              marginTop: '1.2em',
+              marginBottom: '0.6em',
+            },
           },
         },
       },
