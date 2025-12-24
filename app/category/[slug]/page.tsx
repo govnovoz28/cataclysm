@@ -55,7 +55,7 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
-      <header className="py-16 px-6 text-center border-b border-neutral-900 mb-0 relative bg-[#0a0a0a] overflow-hidden">
+      <header className="border-b border-neutral-900 mb-8 relative bg-[#0a0a0a] overflow-hidden">
          
          <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
             <div className="relative w-[500px] h-[500px] opacity-[0.04] mix-blend-screen blur-[1px]">
@@ -68,23 +68,29 @@ export default async function CategoryPage({ params }: Props) {
             </div>
         </div>
 
-         <div className="absolute top-8 left-8 z-20">
-            <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
-            ← Return to Index
-            </Link>
-        </div>
+        <div className="max-w-[1750px] mx-auto relative py-6 px-6 text-center z-10">
+            <div className="absolute left-6 top-6 md:top-auto md:bottom-6 z-20">
+                <Link href="/" className="text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-white transition-colors border border-transparent hover:border-neutral-800 px-4 py-2.5">
+                ← Return to Index
+                </Link>
+            </div>
 
-        <div className="relative z-10">
-            <h1 className={`${orbitron.className} text-4xl md:text-6xl font-bold tracking-normal mb-2 text-white uppercase`}>
-            {category.title}
-            </h1>
-            <p className="font-mono text-[13px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
-            Category Archives 
-            </p>
+            <div className="relative z-10 pt-1 md:pt-2">
+                {/* 
+                    ИЗМЕНЕНИЕ: text-4xl md:text-6xl -> text-3xl md:text-5xl 
+                    Уменьшен размер шрифта названия категории
+                */}
+                <h1 className={`${orbitron.className} text-3xl md:text-5xl font-bold tracking-normal mb-1 text-white uppercase leading-none`}>
+                {category.title}
+                </h1>
+                <p className="font-mono text-[12px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default">
+                Category Archives 
+                </p>
+            </div>
         </div>
       </header>
 
-      <section className="flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full pt-16">
+      <section className="flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full pt-0 md:pt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
           {posts?.map((post) => {
             const date = new Date(post.created_at).toLocaleDateString('ru-RU', {
@@ -107,7 +113,6 @@ export default async function CategoryPage({ params }: Props) {
                 key={post.id} 
                 className="group flex flex-col bg-[#111] border border-neutral-900 hover:border-neutral-700 transition-colors duration-300 relative"
               >
-                {/* 1. Ссылка только на картинку */}
                 <Link 
                   href={`/post/${post.id}`} 
                   className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
@@ -125,17 +130,11 @@ export default async function CategoryPage({ params }: Props) {
                   )}
                 </Link>
 
-                {/* 2. Блок авторов (Смещаются вниз по очереди) */}
                 {post.author && (
                     <div className="absolute top-0 left-0 z-20 flex flex-col items-start pointer-events-none">
-                        {/* 
-                           pointer-events-none на контейнере, чтобы клики мимо имен проходили на статью.
-                           flex-col + items-start = вертикальный список 
-                        */}
                         {post.author.split(',').map((authorName: string, index: number) => {
                             const cleanName = authorName.trim();
                             if (!cleanName) return null;
-
                             return (
                                 <Link 
                                     key={index}
