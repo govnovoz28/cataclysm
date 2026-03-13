@@ -20,7 +20,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
   const[searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [isSearching, setIsSearching] = useState(false)
-  const [showResults, setShowResults] = useState(false)
+  const[showResults, setShowResults] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const[isFocused, setIsFocused] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -59,7 +59,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
       const { data } = await supabase
         .from('posts')
         .select('id, slug, title, author')
-        .or(`title.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`)
+        .or(`title.fts(russian).${searchQuery},author.ilike.%${searchQuery}%,content.fts(russian).${searchQuery}`)
         .limit(8)
 
       if (data) {
@@ -97,11 +97,22 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
       if (selectedIndex >= 0 && searchResults[selectedIndex]) {
         router.push(`/post/${searchResults[selectedIndex].slug || searchResults[selectedIndex].id}`)
         onClose()
+      } else if (searchQuery.trim()) {
+        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+        onClose();
       }
     } else if (e.key === 'Escape') {
       setShowResults(false)
     }
   }
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      onClose();
+    }
+  };
 
   return (
     <div 
@@ -123,10 +134,13 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
               className="w-full max-w-xl relative z-50 group"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative flex items-center border border-neutral-800 group-focus-within:border-neutral-700 transition-colors bg-theme-bg">
+              <form 
+                onSubmit={handleSearchSubmit}
+                className="relative flex items-center border border-neutral-800 group-focus-within:border-neutral-700 transition-colors bg-theme-bg"
+              >
                 
                 {/* Left Icon (Magnifier or X) */}
-                <div className="pl-3 pr-2 flex items-center justify-center">
+                <div className="flex items-center justify-center">
                   {(isFocused || searchQuery) ? (
                     <button
                       type="button"
@@ -138,7 +152,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
                         inputRef.current?.blur()
                         setIsFocused(false)
                       }}
-                      className="text-neutral-500 hover:text-white transition-colors"
+                      className="pl-4 pr-3 py-3 text-neutral-500 hover:text-white transition-colors"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -148,7 +162,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
                     <button 
                       type="button"
                       onClick={() => inputRef.current?.focus()}
-                      className="text-neutral-500 hover:text-white transition-colors"
+                      className="pl-4 pr-3 py-3 text-neutral-500 hover:text-white transition-colors"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -184,20 +198,24 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
 
                 {/* SEARCH Button */}
                 <button
-                  type="button"
-                  onClick={() => {
-                    if (searchQuery.trim()) setShowResults(true)
-                  }}
-                  className="border-l border-neutral-800 group-focus-within:border-neutral-700 px-4 py-2 text-xs font-mono uppercase tracking-widest text-neutral-300 hover:bg-white hover:text-black transition-colors shrink-0"
+                  type="submit"
+                  className="border-l border-neutral-800 group-focus-within:border-neutral-700 px-4 py-3 text-xs font-mono uppercase tracking-widest text-neutral-300 hover:bg-white hover:text-black transition-colors shrink-0"
                 >
                   Search
                 </button>
-              </div>
+              </form>
 
               {/* Dropdown Results */}
               {showResults && searchQuery && (
-                <div className="absolute top-full left-0 right-0 flex flex-col max-h-[40vh] overflow-y-auto custom-scrollbar bg-theme-bg border border-neutral-800 group-focus-within:border-neutral-700 border-t-0 shadow-2xl z-50">
-                  {searchResults.length > 0 ? (
+                <div 
+                  className="absolute top-full left-0 right-0 flex flex-col max-h-[50vh] overflow-y-auto custom-scrollbar bg-theme-bg border border-neutral-800 group-focus-within:border-neutral-700 border-t-0 shadow-2xl z-50"
+                  onMouseLeave={() => setSelectedIndex(-1)}
+                >
+                  {isSearching ? (
+                    <div className="p-8 text-center">
+                      <span className="text-sm text-neutral-600 font-mono uppercase tracking-widest animate-pulse">Поиск...</span>
+                    </div>
+                  ) : searchResults.length > 0 ? (
                     <div className="flex flex-col">
                       {searchResults.map((post, idx) => (
                         <Link
@@ -211,13 +229,11 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
                               : 'bg-transparent hover:bg-neutral-900/50'
                           }`}
                         >
-                          <div className="flex items-start justify-between gap-4">
-                            <h4 className={`text-base md:text-lg font-serif transition-colors line-clamp-2 uppercase ${
+                          <h4 className={`text-base md:text-lg font-serif transition-colors line-clamp-2 uppercase ${
                               selectedIndex === idx ? 'text-white' : 'text-neutral-300'
                             }`}>
                               {post.title}
-                            </h4>
-                          </div>
+                          </h4>
                           {post.author && (
                             <span className={`text-[10px] md:text-xs font-mono uppercase tracking-widest mt-2 block transition-colors ${
                               selectedIndex === idx ? 'text-neutral-400' : 'text-neutral-600'
@@ -228,11 +244,11 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
                         </Link>
                       ))}
                     </div>
-                  ) : !isSearching ? (
+                  ) : (
                     <div className="p-8 text-center">
                       <span className="text-sm text-neutral-600 font-mono uppercase tracking-widest">Ничего не найдено</span>
                     </div>
-                  ) : null}
+                  )}
                 </div>
               )}
             </div>
