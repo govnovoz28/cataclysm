@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --theme-bg: 10 10 10;
+  --theme-card: 17 17 17;
+  --theme-text: 210 210 210;
+  --theme-article: 192 192 192;
+  --theme-title: 225 225 225;
+
+  --color-black: 0 0 0;
+  --color-white: 255 255 255;
+  
+  --color-neutral-100: 245 245 245;
+  --color-neutral-200: 229 229 229;
+  --color-neutral-300: 212 212 212;
+  --color-neutral-400: 163 163 163;
+  --color-neutral-500: 115 115 115;
+  --color-neutral-600: 82 82 82;
+  --color-neutral-700: 64 64 64;
+  --color-neutral-800: 38 38 38;
+  --color-neutral-900: 23 23 23;
+  --color-neutral-950: 10 10 10;
+}
+
+[data-theme='light'] {
+  --theme-bg: 245 245 245;
+  --theme-card: 255 255 255;
+  --theme-text: 0 0 0;
+  --theme-article: 0 0 0;
+  --theme-title: 0 0 0;
+
+  --color-black: 255 255 255;
+  --color-white: 0 0 0;
+  
+  --color-neutral-100: 0 0 0;
+  --color-neutral-200: 10 10 10;
+  --color-neutral-300: 15 15 15;
+  --color-neutral-400: 25 25 25;
+  --color-neutral-500: 40 40 40;
+  --color-neutral-600: 80 80 80;
+  
+  --color-neutral-700: 180 180 180;
+  --color-neutral-800: 212 212 212;
+  --color-neutral-900: 205 205 205;
+  --color-neutral-950: 255 255 255;
+}
+
+.admin-force-dark {
+  --theme-bg: 10 10 10;
+  --theme-card: 17 17 17;
+  --theme-text: 210 210 210;
+  --theme-article: 192 192 192;
+  --theme-title: 225 225 225;
+
+  --color-black: 0 0 0;
+  --color-white: 255 255 255;
+  
+  --color-neutral-100: 245 245 245;
+  --color-neutral-200: 229 229 229;
+  --color-neutral-300: 212 212 212;
+  --color-neutral-400: 163 163 163;
+  --color-neutral-500: 115 115 115;
+  --color-neutral-600: 82 82 82;
+  --color-neutral-700: 64 64 64;
+  --color-neutral-800: 38 38 38;
+  --color-neutral-900: 23 23 23;
+  --color-neutral-950: 10 10 10;
+}
+
+body {
+  background-color: rgb(var(--theme-bg));
+  color: rgb(var(--theme-text));
+  font-family: var(--font-serif), serif; 
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: rgb(var(--color-white));
+  color: rgb(var(--color-black));
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.ProseMirror {
+  outline: none !important; 
+}
+
+.ProseMirror strong,
+.article-content strong {
+  font-weight: 700 !important;
+  color: rgb(var(--theme-text)) !important; 
+}
+
+.ProseMirror em,
+.article-content em {
+  font-style: italic !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.ProseMirror blockquote,
+.article-content blockquote {
+  border-left: 3px solid rgb(var(--theme-text)) !important;
+  padding-left: 1rem !important;
+  margin-left: 0 !important; 
+  font-style: italic !important;
+  color: rgb(var(--theme-article)) !important;
+  font-weight: 400 !important;
+  background: transparent !important;
+  quotes: none !important;
+}
+
+.ProseMirror blockquote cite,
+.article-content blockquote cite,
+.ProseMirror blockquote footer,
+.article-content blockquote footer,
+.ProseMirror blockquote figcaption,
+.article-content blockquote figcaption {
+  color: rgb(var(--theme-text)) !important;
+  opacity: 1 !important;
+  font-style: normal;
+}
+
+.ProseMirror ul,
+.article-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.ProseMirror ol,
+.article-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.ProseMirror li,
+.article-content li {
+  padding-left: 0.5rem !important;
+  margin-bottom: 0.2rem !important;
+}
+
+.ProseMirror li p,
+.article-content li p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.ProseMirror h1, .article-content h1,
+.ProseMirror h2, .article-content h2,
+.ProseMirror h3, .article-content h3,
+.ProseMirror h4, .article-content h4 {
+  color: rgb(var(--theme-title)) !important;
+  font-weight: 700 !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.ProseMirror img,
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+  border-radius: 4px;
+  border: 1px solid rgb(var(--color-neutral-800));
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.ProseMirror img:hover,
+.article-content img:hover {
+  opacity: 1;
+}
+
+.ProseMirror-selectednode {
+  outline: 2px solid rgb(var(--color-white));
+  filter: brightness(1.1);
+}
+
+@keyframes slideInFromRight {
+  0% { opacity: 0; transform: translateX(80px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInFromLeft {
+  0% { opacity: 0; transform: translateX(-80px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-next {
+  animation: slideInFromRight 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-slide-prev {
+  animation: slideInFromLeft 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.bg-watermark {
+  opacity: 0.04;
+  mix-blend-mode: screen;
+  filter: blur(1px);
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+[data-theme='light'] .bg-watermark {
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+  filter: invert(1) blur(1px);
+}
+
+/* Убираем отступ сверху для самого первого элемента в редакторе и статье */
+.ProseMirror > *:first-child,
+.article-content > div > *:first-child,
+.ProseMirror > *:first-child .text-3xl,
+.article-content > div > *:first-child .text-3xl {
+  margin-top: 0 !important;
+}
+
+/* Убираем лишний отступ снизу у параграфа, который содержит заголовок TITLE */
+.ProseMirror p:has(.text-3xl),
+.article-content > div > p:has(.text-3xl) {
+  margin-bottom: 0 !important;
+}
