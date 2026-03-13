@@ -7,6 +7,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import Image from '@tiptap/extension-image'
+import TextAlign from '@tiptap/extension-text-align'
 import { Mark, mergeAttributes, Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
@@ -43,7 +44,7 @@ const BigText = Mark.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return['span', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+    return ['span', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
   },
 })
 
@@ -113,6 +114,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
       StarterKit,
       BigText,
       ManualListPlugin,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
       Placeholder.configure({
         placeholder: 'Напишите философскую мысль...',
       }),
@@ -130,9 +134,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
           prose-p:m-0
           prose-headings:font-bold prose-headings:text-white 
           prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-theme-text 
-          placeholder:text-neutral-700[&_blockquote_p]:text-left[&_blockquote_p+p:last-of-type]:text-right[&_blockquote_p+p:last-of-type]:mt-4[&_blockquote_p+p:last-of-type]:text-theme-text 
+          placeholder:text-neutral-700 [&_blockquote_p]:text-left [&_blockquote_p+p:last-of-type]:text-right [&_blockquote_p+p:last-of-type]:mt-4[&_blockquote_p+p:last-of-type]:text-theme-text 
           
-          [&_img]:rounded-none[&_img]:border-none[&_img]:my-6 [&_img]:max-h-[500px] [&_img]:w-auto [&_img]:mx-auto [&_img]:opacity-90 hover:[&_img]:opacity-100 [&_img]:transition-opacity[&>*:first-child_.text-3xl]:!mt-0 [&>*:first-child]:!mt-0
+          [&_img]:rounded-none [&_img]:border-none [&_img]:my-6 [&_img]:max-h-[500px] [&_img]:w-auto [&_img]:mx-auto [&_img]:opacity-90 hover:[&_img]:opacity-100 [&_img]:transition-opacity[&>*:first-child_.text-3xl]:!mt-0 [&>*:first-child]:!mt-0
         `.replace(/\s+/g, ' ').trim(),
       },
       handlePaste: (view, event, slice) => {
@@ -262,6 +266,20 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
           className={`${btnBase} ${editor.isActive('blockquote') ? activeStyle : inactiveStyle}`}
         >
           QUOTE
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            if (editor.isActive({ textAlign: 'center' })) {
+              editor.chain().focus().unsetTextAlign().run()
+            } else {
+              editor.chain().focus().setTextAlign('center').run()
+            }
+          }}
+          className={`${btnBase} ${editor.isActive({ textAlign: 'center' }) ? activeStyle : inactiveStyle}`}
+        >
+          CENTER
         </button>
       </div>
 
