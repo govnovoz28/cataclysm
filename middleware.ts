@@ -1,5 +1,6 @@
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+
 const ALLOWED_ADMINS = [
   'svatoslav.kopaev046@gmail.com',
   'kirill20042811@gmail.com',
@@ -8,10 +9,17 @@ const ALLOWED_ADMINS = [
 ]
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // 1. БЫСТРЫЙ ВЫХОД: Если это не админка и не логин — выходим мгновенно.
+  // Никаких запросов к Supabase, никакой задержки.
+  if (!pathname.startsWith('/admin') && pathname !== '/login') {
+    return NextResponse.next()
+  }
+
+  // 2. Инициализация только если это действительно нужно
   let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+    request: { headers: request.headers },
   })
 
   const supabase = createServerClient(
@@ -19,16 +27,10 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
+        getAll() { return request.cookies.getAll() },
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          
-          response = NextResponse.next({
-            request,
-          })
-          
+          response = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           )
@@ -36,10 +38,10 @@ export async function middleware(request: NextRequest) {
       },
     }
   )
+
   const { data: { user } } = await supabase.auth.getUser()
 
-  const path = request.nextUrl.pathname
-  if (path.startsWith('/admin')) {
+  if (pathname.startsWith('/admin')) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
@@ -47,7 +49,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/', request.url))
     }
   }
-  if (path === '/login') {
+
+  if (pathname === '/login') {
     if (user && ALLOWED_ADMINS.includes(user.email || '')) {
       return NextResponse.redirect(new URL('/admin', request.url))
     }
@@ -56,8 +59,8 @@ export async function middleware(request: NextRequest) {
   return response
 }
 
+// 3. Строгий matcher. 
+// Не нужно проверять всё подряд.
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/admin/:path*', '/login'],
 }
