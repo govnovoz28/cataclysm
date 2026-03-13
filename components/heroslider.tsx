@@ -41,7 +41,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
   const handlePrev = useCallback(() => {
     setDirection('prev'); 
     setCurrentIndex((prev) => (prev === 0 ? posts.length - 1 : prev - 1));
-  }, [posts.length]);
+  },[posts.length]);
 
   const handleInteraction = useCallback(() => {
     setIsDelayed(true);
@@ -97,7 +97,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
             setFontSizeIndex(prev => prev + 1);
         }
     }
-  }, [fontSizeIndex, currentIndex]);
+  },[fontSizeIndex, currentIndex]);
 
   if (!posts || posts.length === 0) return null;
 
@@ -287,7 +287,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                     </Link>
                     
                     {hasExcerpt && (
-                        <p className={`font-serif text-neutral-400 text-base md:text-lg leading-relaxed ${currentFont.descClamp}`}>
+                        <p className={`font-serif text-neutral-400 text-lg md:text-xl leading-relaxed ${currentFont.descClamp}`}>
                             {activePost.excerpt}
                         </p>
                     )}
