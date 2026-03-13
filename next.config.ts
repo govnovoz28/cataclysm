@@ -6,12 +6,22 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
-    remotePatterns:[
+    remotePatterns: [
       {
         protocol: 'https',
         hostname: 'kksblfpjhrkbuuvsbvcf.supabase.co',
       },
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.cataclysm.online' }],
+        destination: 'https://cataclysm.online/:path*',
+        permanent: true,
+      },
+    ];
   },
 };
 
