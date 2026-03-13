@@ -115,7 +115,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
         className={`absolute top-0 left-0 right-0 bg-theme-bg border-b border-neutral-900 transition-transform duration-500 ease-in-out ${isOpen ? 'translate-y-0' : '-translate-y-full'}`}
         onClick={() => setShowResults(false)}
       >
-        <div className="max-w-[1470px] mx-auto px-4 pt-64 md:pt-40 pb-8 md:pb-12">
+        <div className="max-w-[1470px] mx-auto px-4 pt-56 md:pt-40 pb-8 md:pb-12">
           
           {/* SEARCH BAR & AUTH BUTTON */}
           <div className="flex justify-between items-start mb-8 min-h-[48px]">
