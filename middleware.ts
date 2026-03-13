@@ -59,8 +59,6 @@ export async function middleware(request: NextRequest) {
   return response
 }
 
-// 3. Строгий matcher. 
-// Не нужно проверять всё подряд.
 export const config = {
   matcher: ['/admin/:path*', '/login'],
 }
