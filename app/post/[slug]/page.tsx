@@ -148,7 +148,10 @@ export default async function PostPage({ params }: Props) {
       {/* ─── Фиксированная шапка ─── */}
       {/* fixed вместо sticky — надёжно работает в Telegram WebView и iOS WKWebView */}
       {/* paddingTop: env(safe-area-inset-top) — учитывает notch/Dynamic Island и системный бар Telegram */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-theme-bg/80 backdrop-blur-md border-b border-neutral-900">
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 bg-theme-bg/80 backdrop-blur-md border-b border-neutral-900"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      >
         <div className="max-w-[800px] mx-auto px-6 flex justify-between items-center text-xs font-mono uppercase tracking-widest">
           <Link 
             href="/" 
@@ -164,7 +167,11 @@ export default async function PostPage({ params }: Props) {
       </nav>
 
       {/* Спейсер — резервирует место под фиксированную шапку (~49px высота nav + safe-area) */}
-      <div aria-hidden="true" className="h-[49px]" />
+      <div
+        aria-hidden="true"
+        className="h-[49px]"
+        style={{ marginTop: 'env(safe-area-inset-top)' }}
+      />
 
       <ScrollToTop />
 
