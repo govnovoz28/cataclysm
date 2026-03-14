@@ -1,6 +1,3 @@
-// ==========================================
-// app\post\[slug]\page.tsx
-// ==========================================
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -26,9 +23,9 @@ function capitalizeFirstLetter(string: string | null | undefined) {
 }
 
 function extractHeadings(html: string) {
-  if (!html) return { modifiedHtml: '', headings:[] };
+  if (!html) return { modifiedHtml: '', headings: [] };
   
-  const headings: { id: string; text: string; level: number }[] =[];
+  const headings: { id: string; text: string; level: number }[] = [];
   let counter = 0;
   
   const regex = /<(h[2-6]|span)([^>]*)>(.*?)<\/\1>/gi;
@@ -97,16 +94,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: formattedTitle,
       description: description,
       type: 'article',
-      authors: post.author ?[post.author] : undefined,
+      authors: post.author ? [post.author] : undefined,
       images: post.image_url
-        ?[{ url: post.image_url, width: 1200, height: 630, alt: formattedTitle }]
-        :[],
+        ? [{ url: post.image_url, width: 1200, height: 630, alt: formattedTitle }]
+        : [],
     },
     twitter: {
       card: 'summary_large_image',
       title: formattedTitle,
       description: description,
-      images: post.image_url ?[post.image_url] :[],
+      images: post.image_url ? [post.image_url] : [],
     },
   };
 }
@@ -148,7 +145,13 @@ export default async function PostPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
       
-      <nav className="sticky top-0 z-50 bg-theme-bg/80 backdrop-blur-md border-b border-neutral-900">
+      {/* ─── Фиксированная шапка ─── */}
+      {/* fixed вместо sticky — надёжно работает в Telegram WebView и iOS WKWebView */}
+      {/* paddingTop: env(safe-area-inset-top) — учитывает notch/Dynamic Island и системный бар Telegram */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 bg-theme-bg/80 backdrop-blur-md border-b border-neutral-900"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      >
         <div className="max-w-[800px] mx-auto px-6 flex justify-between items-center text-xs font-mono uppercase tracking-widest">
           <Link 
             href="/" 
@@ -162,6 +165,13 @@ export default async function PostPage({ params }: Props) {
         </div>
         <ReadingProgress />
       </nav>
+
+      {/* Спейсер — резервирует место под фиксированную шапку (~49px высота nav + safe-area) */}
+      <div
+        aria-hidden="true"
+        className="h-[49px]"
+        style={{ marginTop: 'env(safe-area-inset-top)' }}
+      />
 
       <ScrollToTop />
 

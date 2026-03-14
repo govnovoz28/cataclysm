@@ -1,6 +1,3 @@
-// ==========================================
-// app\layout.tsx
-// ==========================================
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Spectral, Orbitron, Tektur } from "next/font/google";
 import "./globals.css";
@@ -8,22 +5,22 @@ import { ThemeProvider } from "@/components/theme-provider";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
-  subsets:["latin", "cyrillic"],
+  subsets: ["latin", "cyrillic"],
   display: "swap",
 });
 
 const spectral = Spectral({
   variable: "--font-serif",
   subsets: ["latin", "cyrillic"],
-  weight:["400", "500", "600", "700"],
-  style:["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
   subsets: ["latin"],
-  weight:["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
@@ -70,7 +67,7 @@ export const metadata: Metadata = {
     siteName: "cataclysm",
     locale: "ru_RU",
     type: "website",
-    images:[
+    images: [
       {
         url: "/og-image-default.jpg",
         width: 1200,
@@ -91,6 +88,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: 'cover', // ← позволяет контенту занимать весь экран включая зоны notch/Dynamic Island
 };
 
 export default function RootLayout({
@@ -102,7 +100,7 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'cataclysm',
-    alternateName:['cataclysm journal', 'ACCD'],
+    alternateName: ['cataclysm journal', 'ACCD'],
     url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cataclysm-accd.vercel.app',
   };
 
