@@ -73,9 +73,9 @@ body {
   background-color: rgb(var(--theme-bg));
   color: rgb(var(--theme-text));
   font-family: var(--font-serif), serif; 
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
+  min-height: 100dvh;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -227,9 +227,7 @@ body {
   mix-blend-mode: screen;
   filter: blur(1px);
   transition: opacity 0.3s ease, filter 0.3s ease;
-}
-
-[data-theme='light'] .bg-watermark {
+}[data-theme='light'] .bg-watermark {
   opacity: 0.15;
   mix-blend-mode: multiply;
   filter: invert(1) blur(1px);
