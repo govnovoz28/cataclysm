@@ -148,7 +148,7 @@ export default async function PostPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
       
-      <nav className="sticky top-[-1px] z-50 bg-theme-bg/80 backdrop-blur-md border-b border-neutral-900 pt-[calc(env(safe-area-inset-top,0px)+1px)]">
+      <nav className="fixed top-0 left-0 right-0 w-full z-50 bg-theme-bg/80 backdrop-blur-md border-b border-neutral-900">
         <div className="max-w-[800px] mx-auto px-6 flex justify-between items-center text-xs font-mono uppercase tracking-widest">
           <Link 
             href="/" 
@@ -165,7 +165,7 @@ export default async function PostPage({ params }: Props) {
 
       <ScrollToTop />
 
-      <article>
+      <article className="pt-[49px]">
         {post.image_url && (
           <div className="w-full h-[50vh] md:h-[70vh] relative">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-bg/50 to-theme-bg z-10"></div>
@@ -324,7 +324,7 @@ export default async function PostPage({ params }: Props) {
                           
                           prose-a:text-theme-title prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-theme-title transition-all
                           
-                          prose-p:leading-[1.6] prose-p:m-6[&_blockquote_p:not(:first-of-type)]:text-right[&_blockquote_p:not(:first-of-type)]:mt-4[&_blockquote_p:not(:first-of-type)]:text-theme-text[&_.text-3xl]:!mt-24[&_.text-3xl]:!mb-0[&_.text-3xl]:block[&>div>*:first-child_.text-3xl]:!mt-0[&>div>*:first-child]:!mt-0
+                          prose-p:leading-[1.6] prose-p:m-6[&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4[&_blockquote_p:not(:first-of-type)]:text-theme-text[&_.text-3xl]:!mt-24 [&_.text-3xl]:!mb-0[&_.text-3xl]:block [&>div>*:first-child_.text-3xl]:!mt-0[&>div>*:first-child]:!mt-0
                         ">
                           <div dangerouslySetInnerHTML={{ __html: modifiedHtml }} />
               </div>
