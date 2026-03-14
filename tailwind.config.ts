@@ -62,8 +62,6 @@ const config: Config = {
               content: 'none',
             },
             p: {
-              marginTop: '0',
-              marginBottom: '0',
               lineHeight: '1.6',
             },
             'h1, h2, h3, h4': {
