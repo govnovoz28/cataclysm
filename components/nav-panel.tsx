@@ -278,13 +278,6 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
             {/* Вторая колонка */}
             <div className="flex flex-col gap-3">
               <Link 
-                href="/saved"
-                onClick={onClose}
-                className="block font-[system-ui,sans-serif] font-light text-base text-white hover:text-neutral-500 uppercase tracking-[0.15em] transition-colors whitespace-nowrap"
-              >
-                Оффлайн материалы
-              </Link>
-              <Link 
                 href="/publication"
                 onClick={onClose}
                 className="block font-[system-ui,sans-serif] font-light text-base text-white hover:text-neutral-500 uppercase tracking-[0.15em] transition-colors whitespace-nowrap"

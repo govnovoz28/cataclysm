@@ -1,3 +1,6 @@
+// ==========================================
+// next.config.ts
+// ==========================================
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -6,7 +9,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
-    remotePatterns: [
+    remotePatterns:[
       {
         protocol: 'https',
         hostname: 'kksblfpjhrkbuuvsbvcf.supabase.co',
@@ -14,11 +17,11 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return [
+    return[
       {
         source: '/:path*',
-        has: [{ type: 'host', value: 'www.cataclysm.online' }],
-        destination: 'https://cataclysm.online/:path*',
+        has: [{ type: 'host', value: 'cataclysm.online' }],
+        destination: 'https://www.cataclysm.online/:path*',
         permanent: true,
       },
     ];

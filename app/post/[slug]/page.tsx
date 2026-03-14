@@ -11,7 +11,6 @@ import ReadingProgress from '@/components/reading-progress';
 import ScrollToTop from '@/components/scroll-to-top';
 import { ThemeToggle } from '@/components/theme-toggle';
 import TableOfContents from '@/components/table-of-contents';
-import SaveButton from '@/components/save-button';
 import type { Post } from '@/types';
 
 export const revalidate = 600;
@@ -158,20 +157,6 @@ export default async function PostPage({ params }: Props) {
             ← Index
           </Link>
           <div className="flex items-center gap-2">
-            <SaveButton post={{
-              id: post.id,
-              slug: post.slug || post.id.toString(),
-              title: post.title,
-              excerpt: post.excerpt,
-              content: modifiedHtml,
-              headings: headings,
-              author: post.author,
-              translator: post.translator,
-              category: displayCategory,
-              categorySlug: displaySlug,
-              image_url: post.image_url,
-              created_at: post.created_at
-            }} />
             <ThemeToggle />
           </div>
         </div>
@@ -339,7 +324,7 @@ export default async function PostPage({ params }: Props) {
                           
                           prose-a:text-theme-title prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-theme-title transition-all
                           
-                          prose-p:leading-[1.6] prose-p:m-6 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4[&_blockquote_p:not(:first-of-type)]:text-theme-text[&_.text-3xl]:!mt-24 [&_.text-3xl]:!mb-0[&_.text-3xl]:block [&>div>*:first-child_.text-3xl]:!mt-0[&>div>*:first-child]:!mt-0
+                          prose-p:leading-[1.6] prose-p:m-6[&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4[&_blockquote_p:not(:first-of-type)]:text-theme-text[&_.text-3xl]:!mt-24 [&_.text-3xl]:!mb-0[&_.text-3xl]:block [&>div>*:first-child_.text-3xl]:!mt-0[&>div>*:first-child]:!mt-0
                         ">
                           <div dangerouslySetInnerHTML={{ __html: modifiedHtml }} />
               </div>
