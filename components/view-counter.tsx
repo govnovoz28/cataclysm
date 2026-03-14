@@ -1,3 +1,6 @@
+// ==========================================
+// components\view-counter.tsx
+// ==========================================
 'use client'
 
 import { useEffect, useState } from 'react';
@@ -43,7 +46,7 @@ export default function ViewCounter({ postId, initialViews }: Props) {
   }, [postId]);
 
   return (
-    <span className="flex items-center gap-2 select-none" title="Просмотры">
+    <span className="inline-flex items-center gap-2 select-none" title="Просмотры">
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         fill="none" 

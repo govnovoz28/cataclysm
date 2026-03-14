@@ -184,7 +184,7 @@ export default async function PostPage({ params }: Props) {
           
           <div className="w-full max-w-[800px] mx-auto px-6">
             <header className="mb-14 text-center">
-              <div className="inline-block px-6 py-3 mb-8 border border-neutral-800 bg-theme-bg text-xs font-mono text-neutral-500 uppercase tracking-widest shadow-2xl leading-8">
+              <div className="inline-block max-w-full px-6 py-3 mb-8 border border-neutral-800 bg-theme-bg text-xs font-mono text-neutral-500 uppercase tracking-widest shadow-2xl leading-8 break-words">
                 <span className="opacity-100">{date}</span>
                 
                 {displayCategory && (
@@ -261,12 +261,12 @@ export default async function PostPage({ params }: Props) {
                 
               </div>
 
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-[1.1] text-theme-title mb-6 drop-shadow-xl uppercase tracking-tighter">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-[1.1] text-theme-title mb-6 drop-shadow-xl uppercase tracking-tighter break-words">
                 {formattedTitle}
               </h1>
               
               {post.excerpt && (
-                  <div className="text-xl md:text-2xl font-serif italic text-neutral-400 mt-6 max-w-2xl mx-auto leading-relaxed">
+                  <div className="text-xl md:text-2xl font-serif italic text-neutral-400 mt-6 max-w-2xl mx-auto leading-relaxed break-words">
                       {post.excerpt}
                   </div>
               )}
@@ -324,7 +324,7 @@ export default async function PostPage({ params }: Props) {
                           
                           prose-a:text-theme-title prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-theme-title transition-all
                           
-                          prose-p:leading-[1.6] prose-p:m-6[&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4[&_blockquote_p:not(:first-of-type)]:text-theme-text[&_.text-3xl]:!mt-24 [&_.text-3xl]:!mb-0[&_.text-3xl]:block [&>div>*:first-child_.text-3xl]:!mt-0[&>div>*:first-child]:!mt-0
+                          prose-p:leading-[1.6] prose-p:m-6 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4[&_blockquote_p:not(:first-of-type)]:text-theme-text[&_.text-3xl]:!mt-24 [&_.text-3xl]:!mb-0[&_.text-3xl]:block [&>div>*:first-child_.text-3xl]:!mt-0[&>div>*:first-child]:!mt-0
                         ">
                           <div dangerouslySetInnerHTML={{ __html: modifiedHtml }} />
               </div>
