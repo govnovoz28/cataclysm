@@ -1,3 +1,6 @@
+// ==========================================
+// app\layout.tsx
+// ==========================================
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Spectral, Orbitron, Tektur } from "next/font/google";
 import "./globals.css";
@@ -111,7 +114,7 @@ export default function RootLayout({
 
   return (
     <html lang="ru" className={`${jetbrainsMono.variable} ${spectral.variable} ${orbitron.variable} ${tektur.variable}`} suppressHydrationWarning>
-      <body className="antialiased min-h-[100dvh] flex flex-col font-serif bg-theme-bg text-theme-text">
+      <body className="antialiased min-h-screen flex flex-col font-serif bg-theme-bg text-theme-text">
         <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
         <ThemeProvider>
           <main className="flex-grow">
