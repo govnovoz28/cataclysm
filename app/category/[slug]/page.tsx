@@ -17,8 +17,11 @@ const orbitron = Orbitron({
 
 export const revalidate = 600;
 
+const POSTS_PER_PAGE = 4;
+
 type Props = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -40,8 +43,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
+
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+  const from = (currentPage - 1) * POSTS_PER_PAGE;
+  const to = from + POSTS_PER_PAGE - 1;
 
   const { data: catData } = await supabase
     .from('categories')
@@ -55,13 +63,33 @@ export default async function CategoryPage({ params }: Props) {
     notFound();
   }
 
-  const { data: postsData } = await supabase
+  const { data: postsData, count } = await supabase
     .from('posts')
-    .select('id, slug, title, excerpt, created_at, image_url, author, translator, views')
+    .select('id, slug, title, excerpt, created_at, image_url, author, translator, views', { count: 'exact' })
     .eq('category_id', category.id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(from, to);
 
   const posts = postsData as Post[] | null;
+
+  const totalPages = count ? Math.ceil(count / POSTS_PER_PAGE) : 1;
+  const hasNextPage = currentPage < totalPages;
+  const hasPrevPage = currentPage > 1;
+
+  const getPageNumbers = (current: number, total: number) => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    if (current <= 4) {
+      return[1, 2, 3, 4, 5, '...', total];
+    }
+    if (current >= total - 3) {
+      return[1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+    return[1, '...', current - 2, current - 1, current, current + 1, current + 2, '...', total];
+  };
+
+  const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text flex flex-col">
@@ -223,6 +251,72 @@ export default async function CategoryPage({ params }: Props) {
             );
           })}
         </div>
+
+        {totalPages > 1 && (
+          <div className="mt-20 pt-8 border-t border-neutral-900 font-mono text-xs uppercase tracking-widest w-full">
+            <div className="flex justify-between items-center w-full max-w-[700px] mx-auto gap-2 md:gap-4">
+              {hasPrevPage ? (
+                <Link 
+                  href={`/category/${slug}?page=${currentPage - 1}`}
+                  className="w-16 md:w-32 h-10 flex items-center justify-center text-neutral-400 hover:text-white transition-colors border border-neutral-800 hover:border-neutral-500 shrink-0"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
+                  </svg>
+                </Link>
+              ) : (
+                <span className="w-16 md:w-32 h-10 flex items-center justify-center text-neutral-800 border border-neutral-900 cursor-not-allowed shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
+                  </svg>
+                </span>
+              )}
+
+              <div className="flex justify-center items-center gap-2 flex-wrap">
+                {pageNumbers.map((page, index) => {
+                  if (page === '...') {
+                    return (
+                      <span key={`ellipsis-${index}`} className="w-10 h-10 flex items-center justify-center text-neutral-500 select-none shrink-0">
+                        ...
+                      </span>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={page}
+                      href={`/category/${slug}?page=${page}`}
+                      className={`w-10 h-10 flex items-center justify-center transition-colors border shrink-0 ${
+                        page === currentPage
+                          ? 'bg-neutral-200 text-black border-neutral-200'
+                          : 'text-neutral-400 hover:text-white border-neutral-800 hover:border-neutral-500'
+                      }`}
+                    >
+                      {page}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {hasNextPage ? (
+                <Link 
+                  href={`/category/${slug}?page=${currentPage + 1}`}
+                  className="w-16 md:w-32 h-10 flex items-center justify-center text-neutral-400 hover:text-white transition-colors border border-neutral-800 hover:border-neutral-500 shrink-0"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                  </svg>
+                </Link>
+              ) : (
+                <span className="w-16 md:w-32 h-10 flex items-center justify-center text-neutral-800 border border-neutral-900 cursor-not-allowed shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                  </svg>
+                </span>
+              )}
+            </div>
+          </div>
+        )}
 
         {(!posts || posts.length === 0) && (
             <div className="text-center py-20 border border-dashed border-neutral-900 mt-10">
