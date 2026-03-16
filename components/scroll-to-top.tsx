@@ -1,6 +1,3 @@
-// ==========================================
-// components\scroll-to-top.tsx
-// ==========================================
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -10,7 +7,7 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.scrollY > 300) {
+      if (window.scrollY > 500) {
         setIsVisible(true)
       } else {
         setIsVisible(false)
@@ -35,7 +32,7 @@ export default function ScrollToTop() {
     <button
       onClick={scrollToTop}
       className={`
-        hidden md:block xl:hidden 2xl:block
+        hidden lg:block xl:hidden 2xl:block
         fixed top-20 left-4 2xl:left-16 z-50 
         p-2
         text-neutral-600 hover:text-white

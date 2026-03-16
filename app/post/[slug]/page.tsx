@@ -293,7 +293,7 @@ export default async function PostPage({ params }: Props) {
               
               {isLongText && headings.length > 0 && (
                 <details className="xl:hidden mb-10 border border-neutral-900 bg-theme-bg/50 group">
-                  <summary className="flex items-center justify-between p-4 cursor-pointer select-none list-none[&::-webkit-details-marker]:hidden">
+                  <summary className="flex items-center justify-between p-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden [&::marker]:hidden">
                     <span className="text-[10px] font-[system-ui,sans-serif] font-medium text-neutral-500 uppercase tracking-widest">
                       Оглавление
                     </span>
