@@ -1,6 +1,3 @@
-// ==========================================
-// components\nav-panel.tsx
-// ==========================================
 'use client'
 
 import Link from 'next/link'
@@ -17,29 +14,58 @@ type NavPanelProps = {
 }
 
 export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps) {
-  const[searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
-  const[isSearching, setIsSearching] = useState(false)
-  const[showResults, setShowResults] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
+  const [showResults, setShowResults] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
-  const[isFocused, setIsFocused] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
-  const [touchStartY, setTouchStartY] = useState<number | null>(null)
-  const[touchEndY, setTouchEndY] = useState<number | null>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const touchStartYRef = useRef<number | null>(null)
 
-  // Блокировка скролла страницы при открытом меню
+  // Блокировка скролла + non-passive touchmove для предотвращения скролла страницы при свайпе
   useEffect(() => {
+    const el = overlayRef.current
+    if (!el) return
+
+    const onTouchStart = (e: TouchEvent) => {
+      if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
+      touchStartYRef.current = e.targetTouches[0].clientY
+    }
+
+    const onTouchMove = (e: TouchEvent) => {
+      if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
+      // preventDefault здесь работает только благодаря { passive: false }
+      e.preventDefault()
+    }
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
+      const startY = touchStartYRef.current
+      if (!startY) return
+      const endY = e.changedTouches[0].clientY
+      const distance = startY - endY
+      if (distance > 50) onClose()
+      touchStartYRef.current = null
+    }
+
     if (isOpen) {
       document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
+      el.addEventListener('touchstart', onTouchStart, { passive: true })
+      el.addEventListener('touchmove', onTouchMove, { passive: false })
+      el.addEventListener('touchend', onTouchEnd, { passive: true })
     }
+
     return () => {
       document.body.style.overflow = ''
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
     }
-  }, [isOpen])
+  }, [isOpen, onClose])
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -117,38 +143,16 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
-    setTouchEndY(null)
-    setTouchStartY(e.targetTouches[0].clientY)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
-    setTouchEndY(e.targetTouches[0].clientY)
-  }
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
-    if (!touchStartY || !touchEndY) return
-    const distance = touchStartY - touchEndY
-    if (distance > 50) {
-      onClose()
-    }
-  }
-
   return (
-    <div 
+    <div
+      ref={overlayRef}
       className={`fixed inset-0 z-[100] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
     >
-      <div 
+      <div
         className="absolute inset-0 bg-black/95 backdrop-blur-sm"
         onClick={onClose}
       />
-      <nav 
+      <nav
         className={`absolute top-0 left-0 right-0 bg-theme-bg border-b border-neutral-900 transition-transform duration-500 ease-in-out ${isOpen ? 'translate-y-0' : '-translate-y-full'}`}
         onClick={() => setShowResults(false)}
       >
@@ -156,11 +160,11 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
           
           {/* SEARCH BAR & AUTH BUTTON */}
           <div className="flex justify-between items-start mb-8 min-h-[48px]">
-            <div 
+            <div
               className="w-full max-w-xl relative z-50 group"
               onClick={(e) => e.stopPropagation()}
             >
-              <form 
+              <form
                 onSubmit={handleSearchSubmit}
                 className="relative flex items-center border border-neutral-800 group-focus-within:border-neutral-700 transition-colors bg-theme-bg"
               >
@@ -171,7 +175,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
                     <button
                       type="button"
                       onMouseDown={(e) => {
-                        e.preventDefault() 
+                        e.preventDefault()
                         setSearchQuery('')
                         setShowResults(false)
                         setSelectedIndex(-1)
@@ -185,7 +189,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
                       </svg>
                     </button>
                   ) : (
-                    <button 
+                    <button
                       type="button"
                       onClick={() => inputRef.current?.focus()}
                       className="pl-4 pr-3 py-3 text-neutral-500 hover:text-white transition-colors"
@@ -204,9 +208,9 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
                   placeholder="ПОИСК..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => { 
+                  onFocus={() => {
                     setIsFocused(true)
-                    if (searchQuery.trim()) setShowResults(true) 
+                    if (searchQuery.trim()) setShowResults(true)
                   }}
                   onBlur={() => {
                     setTimeout(() => setIsFocused(false), 200)
@@ -233,7 +237,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
 
               {/* Dropdown Results */}
               {showResults && searchQuery && (
-                <div 
+                <div
                   className="absolute top-full left-0 right-0 flex flex-col max-h-[50vh] overflow-y-auto custom-scrollbar bg-theme-bg border border-neutral-800 group-focus-within:border-neutral-700 border-t-0 shadow-2xl z-50"
                   onMouseLeave={() => setSelectedIndex(-1)}
                 >
@@ -290,8 +294,8 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
             {/* Первая колонка */}
             <div className="flex flex-col gap-3">
               {categories.map(cat => (
-                <Link 
-                  key={cat.id} 
+                <Link
+                  key={cat.id}
                   href={`/category/${cat.slug}`}
                   onClick={onClose}
                   className="block font-[system-ui,sans-serif] font-light text-base text-white hover:text-neutral-500 uppercase tracking-[0.15em] transition-colors whitespace-nowrap"
@@ -303,21 +307,21 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
 
             {/* Вторая колонка */}
             <div className="flex flex-col gap-3">
-              <Link 
+              <Link
                 href="/publication"
                 onClick={onClose}
                 className="block font-[system-ui,sans-serif] font-light text-base text-white hover:text-neutral-500 uppercase tracking-[0.15em] transition-colors whitespace-nowrap"
               >
                 Условия публикации
               </Link>
-              <Link 
+              <Link
                 href="https://boosty.to/catalysm"
                 onClick={onClose}
                 className="block font-[system-ui,sans-serif] font-light text-base text-white hover:text-neutral-500 uppercase tracking-[0.15em] transition-colors whitespace-nowrap"
               >
                 Поддержать проект
               </Link>
-              <Link 
+              <Link
                 href="https://vk.com/club219573774"
                 target="_blank"
                 rel="noopener noreferrer"
