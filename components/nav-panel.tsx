@@ -19,12 +19,15 @@ type NavPanelProps = {
 export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps) {
   const[searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
-  const [isSearching, setIsSearching] = useState(false)
+  const[isSearching, setIsSearching] = useState(false)
   const[showResults, setShowResults] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const[isFocused, setIsFocused] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  const [touchStartY, setTouchStartY] = useState<number | null>(null)
+  const[touchEndY, setTouchEndY] = useState<number | null>(null)
 
   // Блокировка скролла страницы при открытом меню
   useEffect(() => {
@@ -114,9 +117,32 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
     }
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
+    setTouchEndY(null)
+    setTouchStartY(e.targetTouches[0].clientY)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
+    setTouchEndY(e.targetTouches[0].clientY)
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('.custom-scrollbar')) return
+    if (!touchStartY || !touchEndY) return
+    const distance = touchStartY - touchEndY
+    if (distance > 50) {
+      onClose()
+    }
+  }
+
   return (
     <div 
       className={`fixed inset-0 z-[100] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <div 
         className="absolute inset-0 bg-black/95 backdrop-blur-sm"
