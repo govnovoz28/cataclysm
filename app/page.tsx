@@ -1,14 +1,12 @@
-// ==========================================
-// app\page.tsx
-// ==========================================
 import { createServerClient } from '@supabase/ssr'
 import Link from 'next/link';
 import Image from 'next/image'; 
 import HeroSlider from '@/components/heroslider';
 import Header from '@/components/header';
+import AuthorLink from '@/components/author-link';
 import type { Post, Category } from '@/types';
 
-export const revalidate = 600;
+export const dynamic = 'force-dynamic';
 
 const POSTS_PER_PAGE = 6;
 
@@ -23,7 +21,7 @@ export default async function Home({
     {
       cookies: {
         getAll() {
-          return[] 
+          return []
         },
       },
     }
@@ -35,7 +33,7 @@ export default async function Home({
   const from = (currentPage - 1) * POSTS_PER_PAGE;
   const to = from + POSTS_PER_PAGE - 1;
 
-  const[sliderData, postsData, categoriesData] = await Promise.all([
+  const [sliderData, postsData, categoriesData] = await Promise.all([
     supabase
       .from('posts')
       .select('id, slug, title, excerpt, content, image_url, author, category, created_at, views, translator, categories(title, slug)')
@@ -68,12 +66,12 @@ export default async function Home({
       return Array.from({ length: total }, (_, i) => i + 1);
     }
     if (current <= 4) {
-      return[1, 2, 3, 4, 5, '...', total];
+      return [1, 2, 3, 4, 5, '...', total];
     }
     if (current >= total - 3) {
-      return[1, '...', total - 4, total - 3, total - 2, total - 1, total];
+      return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
     }
-    return[1, '...', current - 2, current - 1, current, current + 1, current + 2, '...', total];
+    return [1, '...', current - 2, current - 1, current, current + 1, current + 2, '...', total];
   };
 
   const pageNumbers = getPageNumbers(currentPage, totalPages);
@@ -84,7 +82,7 @@ export default async function Home({
       style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
     >
       
-      <Header categories={(categoriesData.data as Category[]) ||[]} />
+      <Header categories={(categoriesData.data as Category[]) || []} />
 
       {sliderPosts && sliderPosts.length > 0 && (
         <HeroSlider posts={sliderPosts} />
@@ -92,11 +90,11 @@ export default async function Home({
 
       <section className={`flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full ${sliderPosts && sliderPosts.length > 0 ? 'pt-0 md:pt-4' : 'pt-16'}`}>
         <div className="mb-10 flex items-center gap-4 select-none">
-             <span className="h-[1px] bg-neutral-900 flex-grow"></span>
-             <span className="font-mono text-[12px] uppercase tracking-widest text-neutral-500">
-               Publications
-             </span>
-             <span className="h-[1px] bg-neutral-900 flex-grow"></span>
+          <span className="h-[1px] bg-neutral-900 flex-grow"></span>
+          <span className="font-mono text-[12px] uppercase tracking-widest text-neutral-500">
+            Publications
+          </span>
+          <span className="h-[1px] bg-neutral-900 flex-grow"></span>
         </div>
 
         {posts && posts.length > 0 ? (
@@ -134,27 +132,13 @@ export default async function Home({
                       href={`/post/${post.slug || post.id}`} 
                       className="block relative w-full h-64 overflow-hidden border-b border-neutral-900 flex-shrink-0"
                     >
-
-                  {post.author && (
-                    <div className="absolute top-0 left-0 z-20 flex flex-col items-start">
-                      <object>
-                        {post.author.split(',').map((auth: string, index: number) => {
+                      {post.author && (
+                        <div className="absolute top-0 left-0 z-20 flex flex-col items-start">
+                          {post.author.split(',').map((auth: string, index: number) => {
                             const cleanAuthor = auth.trim();
-                            if (!cleanAuthor) return null; 
-
-                            return (
-                              <Link 
-                                key={index}
-                                href={`/author/${cleanAuthor}`}
-                                      className="block bg-black border-r border-b border-neutral-800 px-3 py-1 hover:bg-white group/author transition-colors cursor-pointer w-fit"
-                                    >
-                                      <span className="font-mono text-[12px] font-bold text-white uppercase tracking-widest group-hover/author:text-black">
-                                        {cleanAuthor}
-                                      </span>
-                                    </Link>
-                                );
-                            })}
-                          </object>
+                            if (!cleanAuthor) return null;
+                            return <AuthorLink key={index} name={cleanAuthor} />;
+                          })}
                         </div>
                       )}
 
@@ -179,14 +163,14 @@ export default async function Home({
                         <span className="text-neutral-700">/</span>
                         
                         {catData ? (
-                            <Link 
-                                href={`/category/${catData.slug}`} 
-                                className="text-neutral-400 hover:text-white transition-colors font-semibold z-30 relative"
-                            >
-                                {catData.title}
-                            </Link>
+                          <Link 
+                            href={`/category/${catData.slug}`} 
+                            className="text-neutral-400 hover:text-white transition-colors font-semibold z-30 relative"
+                          >
+                            {catData.title}
+                          </Link>
                         ) : (
-                            <span className="text-neutral-400 font-semibold">{categoryName}</span>
+                          <span className="text-neutral-400 font-semibold">{categoryName}</span>
                         )}
 
                         {post.translator && (
@@ -194,10 +178,10 @@ export default async function Home({
                             <span className="text-neutral-700">/</span>
                             <span className="text-neutral-500">ПЕРЕВОДЧИК:</span>
                             <Link 
-                                href={`/author/${post.translator}`} 
-                                className="text-neutral-400 hover:text-white transition-colors font-semibold z-30 relative"
+                              href={`/author/${post.translator}`} 
+                              className="text-neutral-400 hover:text-white transition-colors font-semibold z-30 relative"
                             >
-                                {post.translator}
+                              {post.translator}
                             </Link>
                           </>
                         )}
@@ -217,7 +201,6 @@ export default async function Home({
                           </svg>
                           {viewsCount}
                         </span>
-                        
                       </div>
 
                       <Link href={`/post/${post.slug || post.id}`} className="block w-full mb-4">
@@ -228,7 +211,7 @@ export default async function Home({
 
                       {hasExcerpt && (
                         <p className="font-serif text-neutral-300 text-lg leading-7 line-clamp-4 mb-8 flex-grow opacity-95">
-                            {post.excerpt}
+                          {post.excerpt}
                         </p>
                       )}
 
@@ -307,35 +290,28 @@ export default async function Home({
           </>
         ) : (
           <div className="relative w-full min-h-[500px]">
-            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 relative z-10">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex flex-col border border-neutral-900 h-full min-h-[450px]">
-                    
-                    <div className="h-64 border-b border-neutral-900 bg-theme-bg"></div>
-                    
-                    <div className="p-6 flex flex-col gap-6 flex-grow">
-                        
-                        <div className="flex gap-2">
-                             <div className="h-2 w-16 bg-neutral-900"></div>
-                             <div className="h-2 w-24 bg-neutral-900"></div>
-                        </div>
-                        
-                        <div className="space-y-3">
-                             <div className="h-6 w-full bg-neutral-900"></div>
-                             <div className="h-6 w-2/3 bg-neutral-900"></div>
-                        </div>
-
-                        <div className="space-y-2 mt-2">
-                             <div className="h-2 w-full bg-neutral-900"></div>
-                             <div className="h-2 w-full bg-neutral-900"></div>
-                             <div className="h-2 w-1/2 bg-neutral-900"></div>
-                        </div>
-
-                        <div className="mt-auto pt-4 border-t border-neutral-900 w-32">
-                             <div className="h-3 w-full bg-neutral-900"></div>
-                        </div>
+                  <div className="h-64 border-b border-neutral-900 bg-theme-bg"></div>
+                  <div className="p-6 flex flex-col gap-6 flex-grow">
+                    <div className="flex gap-2">
+                      <div className="h-2 w-16 bg-neutral-900"></div>
+                      <div className="h-2 w-24 bg-neutral-900"></div>
                     </div>
+                    <div className="space-y-3">
+                      <div className="h-6 w-full bg-neutral-900"></div>
+                      <div className="h-6 w-2/3 bg-neutral-900"></div>
+                    </div>
+                    <div className="space-y-2 mt-2">
+                      <div className="h-2 w-full bg-neutral-900"></div>
+                      <div className="h-2 w-full bg-neutral-900"></div>
+                      <div className="h-2 w-1/2 bg-neutral-900"></div>
+                    </div>
+                    <div className="mt-auto pt-4 border-t border-neutral-900 w-32">
+                      <div className="h-3 w-full bg-neutral-900"></div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -346,8 +322,8 @@ export default async function Home({
       <footer className="py-8 text-center border-t border-neutral-900 mt-auto bg-black">
         <p className="text-[15px] font-mono text-neutral-400 select-none">
           ВСЁ, ЧТО МОГЛО ПРОИЗОЙТИ - УЖЕ ПРОИЗОШЛО
-          </p>
-          <p className="text-[14px] font-mono text-neutral-500 select-none">
+        </p>
+        <p className="text-[14px] font-mono text-neutral-500 select-none">
           cataclysm journal / {new Date().getFullYear()} 
         </p>
       </footer>
