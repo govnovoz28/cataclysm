@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -16,6 +17,20 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+// cache() из React гарантирует, что при одном рендере страницы
+// этот запрос выполнится ровно один раз, даже если его вызвали
+// и generateMetadata, и PostPage одновременно.
+const getPost = cache(async (slug: string): Promise<Post | null> => {
+  let query = supabase.from('posts').select('*, views, categories(title, slug)');
+  if (/^\d+$/.test(slug)) {
+    query = query.eq('id', slug);
+  } else {
+    query = query.eq('slug', slug);
+  }
+  const { data } = await query.single();
+  return data as Post | null;
+});
+
 function capitalizeFirstLetter(string: string | null | undefined) {
   if (!string) return '';
   const lower = string.toLowerCase();
@@ -28,7 +43,10 @@ function extractHeadings(html: string) {
   const headings: { id: string; text: string; level: number }[] = [];
   let counter = 0;
   
-  const regex = /<(h[2-6]|span)([^>]*)>(.*?)<\/\1>/gi;
+  // Было: .*? — не матчит переносы строк, заголовки с вложенными тегами
+  //        или разбитые на несколько строк пропадали из TOC.
+  // Стало: [\s\S]*? — матчит любые символы включая \n и \r.
+  const regex = /<(h[2-6]|span)([^>]*?)>([\s\S]*?)<\/\1>/gi;
   
   let modifiedHtml = html.replace(regex, (match, tag, attrs, content) => {
     const isHeadingTag = /^h[2-6]$/i.test(tag);
@@ -66,15 +84,8 @@ function extractHeadings(html: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
-  let query = supabase.from('posts').select('title, content, excerpt, image_url, author');
-  if (/^\d+$/.test(slug)) {
-    query = query.eq('id', slug);
-  } else {
-    query = query.eq('slug', slug);
-  }
-
-  const { data } = await query.single();
-  const post = data as Post | null;
+  // Теперь используем тот же закешированный запрос — без лишнего обращения к БД.
+  const post = await getPost(slug);
 
   if (!post) {
     return { title: 'Статья не найдена' };
@@ -110,16 +121,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
-  
-  let query = supabase.from('posts').select('*, views, categories(title, slug)');
-  if (/^\d+$/.test(slug)) {
-    query = query.eq('id', slug);
-  } else {
-    query = query.eq('slug', slug);
-  }
 
-  const { data } = await query.single();
-  const post = data as Post | null;
+  // Второй вызов getPost — React вернёт закешированный результат первого вызова.
+  const post = await getPost(slug);
   
   if (!post) {
     notFound();

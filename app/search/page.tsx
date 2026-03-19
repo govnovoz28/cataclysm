@@ -1,6 +1,3 @@
-// ==========================================
-// app\search\page.tsx
-// ==========================================
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,15 +7,30 @@ import type { Post } from '@/types';
 
 const orbitron = Orbitron({
   subsets: ['latin'],
-  weight:['400', '500', '600', '700', '800', '900'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   display: 'swap',
 });
 
-export const revalidate = 600;
+export const dynamic = 'force-dynamic';
 
 type Props = {
   searchParams: Promise<{ q?: string }>;
 };
+
+// Санируем пользовательский ввод перед тем, как он попадает в запрос.
+// Удаляем символы, которые могут сломать синтаксис Supabase .or() и FTS:
+// запятая — разделитель условий в .or()
+// точка — разделитель в FTS-операторах (fts(russian).query)
+// скобки — используются Supabase для группировки условий
+// процент — спецсимвол ILIKE, может дать "%%query%%" вместо "%query%"
+// одинарная кавычка — потенциальный SQL-инъект через строковые литералы
+function sanitizeQuery(raw: string): string {
+  return raw
+    .replace(/[,().%']/g, ' ')  // заменяем опасные символы пробелом
+    .replace(/\s+/g, ' ')       // схлопываем множественные пробелы
+    .trim()
+    .slice(0, 100);             // ограничиваем длину запроса
+}
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { q } = await searchParams;
@@ -27,7 +39,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     title: `Результаты поиска: "${query}" | cataclysm`,
     description: `Поиск по публикациям журнала cataclysm по запросу: ${query}`,
     robots: {
-      index: false, // Не индексируем страницы поиска
+      index: false,
       follow: false,
     }
   };
@@ -35,7 +47,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function SearchPage({ searchParams }: Props) {
   const { q } = await searchParams;
-  const query = q || '';
+  const rawQuery = q || '';
+  const query = sanitizeQuery(rawQuery);
 
   let posts: Post[] | null = [];
   if (query) {
@@ -63,9 +76,9 @@ export default async function SearchPage({ searchParams }: Props) {
                 <h1 className={`${orbitron.className} text-3xl md:text-5xl font-bold tracking-normal mb-[2px] text-white leading-none text-center break-words w-full`}>
                   ПОИСК
                 </h1>
-                {query && (
+                {rawQuery && (
                   <p className="font-mono text-[12px] text-neutral-500 tracking-[0.2em] uppercase select-none cursor-default text-center">
-                    "{query}"
+                    "{rawQuery}"
                   </p>
                 )}
             </div>
@@ -74,7 +87,7 @@ export default async function SearchPage({ searchParams }: Props) {
       </header>
 
       <section className="flex-grow max-w-[1200px] mx-auto px-4 pb-16 w-full pt-0 md:pt-4">
-        {query ? (
+        {rawQuery ? (
           posts && posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
               {posts.map((post) => {
