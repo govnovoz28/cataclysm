@@ -248,3 +248,10 @@ body {
 .article-content > div > p:has(.text-3xl) {
   margin-bottom: 0 !important;
 }
+
+/* Пустые параграфы (нажатый Enter в редакторе) должны иметь высоту строки,
+   чтобы намеренные отступы между блоками сохранялись как в редакторе */
+.article-content p:empty,
+.article-content p:has(> br:only-child) {
+  min-height: 1.6em;
+}
