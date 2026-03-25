@@ -662,13 +662,6 @@ export default function AdminPage() {
                     onChange={(e) => setTitle(e.target.value)}
                     minRows={1}
                 />
-                <input
-                    type="text"
-                    placeholder="SLUG (генерируется автоматически)"
-                    className="w-full bg-transparent border-b border-neutral-800 pb-2 text-sm font-mono text-neutral-500 placeholder:text-neutral-800 focus:outline-none focus:border-white transition-colors mt-4 mb-2"
-                    value={slug}
-                    onChange={(e) => setSlug(e.target.value)}
-                />
                 <TextareaAutosize
                     placeholder="Лид-абзац..."
                     className="w-full bg-transparent resize-none border-none outline-none text-xl md:text-2xl font-serif italic text-neutral-400 placeholder:text-neutral-800 leading-relaxed mt-2"
