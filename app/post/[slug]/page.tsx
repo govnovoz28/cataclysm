@@ -17,6 +17,9 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+// cache() из React гарантирует, что при одном рендере страницы
+// этот запрос выполнится ровно один раз, даже если его вызвали
+// и generateMetadata, и PostPage одновременно.
 const getPost = cache(async (slug: string): Promise<Post | null> => {
   let query = supabase.from('posts').select('*, views, categories(title, slug)');
   if (/^\d+$/.test(slug)) {
@@ -40,7 +43,10 @@ function extractHeadings(html: string) {
   const headings: { id: string; text: string; level: number }[] = [];
   let counter = 0;
   
-  const regex = /<(h[2-6]|span)([^>]*?)\>([\s\S]*?)<\/\1>/gi;
+  // Было: .*? — не матчит переносы строк, заголовки с вложенными тегами
+  //        или разбитые на несколько строк пропадали из TOC.
+  // Стало: [\s\S]*? — матчит любые символы включая \n и \r.
+  const regex = /<(h[2-6]|span)([^>]*?)>([\s\S]*?)<\/\1>/gi;
   
   let modifiedHtml = html.replace(regex, (match, tag, attrs, content) => {
     const isHeadingTag = /^h[2-6]$/i.test(tag);
@@ -63,6 +69,7 @@ function extractHeadings(html: string) {
     return `<${tag}${attrs} id="${id}">${content}</${tag}>`;
   });
 
+  // Обработка ручных списков "1) "
   modifiedHtml = modifiedHtml.replace(/<p([^>]*)>((?:\s|&nbsp;|<[^>]+>)*\d+\).*?)<\/p>/gi, (match, attrs, content) => {
     if (attrs.includes('manual-list-item')) return match;
     if (attrs.includes('class="')) {
@@ -77,6 +84,7 @@ function extractHeadings(html: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
+  // Теперь используем тот же закешированный запрос — без лишнего обращения к БД.
   const post = await getPost(slug);
 
   if (!post) {
@@ -114,6 +122,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
 
+  // Второй вызов getPost — React вернёт закешированный результат первого вызова.
   const post = await getPost(slug);
   
   if (!post) {
@@ -140,6 +149,9 @@ export default async function PostPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
       
+      {/* ─── Фиксированная шапка ─── */}
+      {/* fixed вместо sticky — надёжно работает в Telegram WebView и iOS WKWebView */}
+      {/* paddingTop: env(safe-area-inset-top) — учитывает notch/Dynamic Island и системный бар Telegram */}
       <nav
         className="fixed top-0 left-0 right-0 z-50 bg-theme-bg/80 backdrop-blur-md border-b border-neutral-900"
         style={{ paddingTop: 'env(safe-area-inset-top)' }}
@@ -158,6 +170,7 @@ export default async function PostPage({ params }: Props) {
         <ReadingProgress />
       </nav>
 
+      {/* Спейсер — резервирует место под фиксированную шапку (~49px высота nav + safe-area) */}
       <div
         aria-hidden="true"
         className="h-[49px]"
@@ -313,21 +326,21 @@ export default async function PostPage({ params }: Props) {
               )}
 
               <div className="
-                article-content
-                prose prose-invert prose-p:text-xl max-w-none
-                font-serif text-theme-article selection:bg-theme-title selection:text-theme-bg
-
-                break-words prose-a:break-all
-
-                prose-headings:font-serif prose-headings:font-medium prose-headings:text-theme-title prose-headings:uppercase prose-headings:tracking-tight
-                prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
-                prose-h3:text-2xl
-
-                prose-a:text-theme-title prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-theme-title transition-all
-
-                prose-p:leading-[1.6] prose-p:m-0 [&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4 [&_blockquote_p:not(:first-of-type)]:text-theme-text [&_.text-3xl]:!mt-24 [&_.text-3xl]:!mb-0 [&_.text-3xl]:block [&>div>*:first-child_.text-3xl]:!mt-0 [&>div>*:first-child]:!mt-0
-              ">
-                <div dangerouslySetInnerHTML={{ __html: modifiedHtml }} />
+                          article-content
+                          prose prose-invert prose-p:text-xl max-w-none 
+                          font-serif text-theme-article selection:bg-theme-title selection:text-theme-bg
+                          
+                          break-words prose-a:break-all
+                          
+                          prose-headings:font-serif prose-headings:font-medium prose-headings:text-theme-title prose-headings:uppercase prose-headings:tracking-tight
+                          prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
+                          prose-h3:text-2xl
+                          
+                          prose-a:text-theme-title prose-a:underline prose-a:decoration-neutral-600 prose-a:underline-offset-4 hover:prose-a:decoration-theme-title transition-all
+                          
+                          prose-p:leading-[1.6] prose-p:m-6[&_blockquote_p:not(:first-of-type)]:text-right [&_blockquote_p:not(:first-of-type)]:mt-4[&_blockquote_p:not(:first-of-type)]:text-theme-text[&_.text-3xl]:!mt-24 [&_.text-3xl]:!mb-0[&_.text-3xl]:block [&>div>*:first-child_.text-3xl]:!mt-0[&>div>*:first-child]:!mt-0
+                        ">
+                          <div dangerouslySetInnerHTML={{ __html: modifiedHtml }} />
               </div>
 
               <div className="mt-24 mb-12 flex justify-center items-center select-none opacity-80">
