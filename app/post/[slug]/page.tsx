@@ -30,8 +30,9 @@ const getPost = cache(async (slug: string): Promise<Post | null> => {
 
 function capitalizeFirstLetter(string: string | null | undefined) {
   if (!string) return '';
-  const lower = string.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
+  return string.replace(/(^|:\s+)([а-яёa-z])/g, (_, prefix, char) =>
+    prefix + char.toUpperCase()
+  );
 }
 
 function extractHeadings(html: string) {
