@@ -1,6 +1,3 @@
-// ==========================================
-// components\heroslider.tsx
-// ==========================================
 'use client';
 
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
@@ -24,13 +21,13 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
 
   const minSwipeDistance = 50;
 
-  const fontConfig =[
-    { sizeClass: "text-4xl md:text-6xl lg:text-[5rem] xl:text-[6rem]", leading: "leading-[0.8]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-4xl md:text-5xl lg:text-6xl xl:text-7xl", leading: "leading-[0.85]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-3xl md:text-4xl lg:text-5xl xl:text-6xl", leading: "leading-[0.9]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-2xl md:text-3xl lg:text-4xl xl:text-5xl", leading: "leading-[0.95]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-xl md:text-2xl lg:text-3xl", leading: "leading-tight", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-lg md:text-xl", leading: "leading-snug", titleClamp: "", descClamp: "line-clamp-5" }
+  const fontConfig = [
+    { sizeClass: "text-[5.5rem]", leading: "leading-[0.8]",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-7xl",      leading: "leading-[0.85]", descClamp: "line-clamp-none" },
+    { sizeClass: "text-6xl",      leading: "leading-[0.9]",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-5xl",      leading: "leading-[0.95]", descClamp: "line-clamp-none" },
+    { sizeClass: "text-4xl",      leading: "leading-tight",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-2xl",      leading: "leading-snug",   descClamp: "line-clamp-5"    },
   ];
 
   const handleNext = useCallback(() => {
@@ -279,7 +276,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                         <div className={`flex items-start break-normal w-full ${!hasExcerpt ? 'mb-0' : 'mb-3'}`}>
                             <h2 className={`
                                 font-serif text-theme-title tracking-tight hover:text-white transition-colors w-full uppercase hyphens-none
-                                ${currentFont.sizeClass} ${currentFont.leading} ${currentFont.titleClamp}
+                                ${currentFont.sizeClass} ${currentFont.leading}
                             `}>
                                 {displayTitle}
                             </h2>
