@@ -21,16 +21,14 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
 
   const minSwipeDistance = 50;
 
-const fontConfig = [
-  { sizeClass: "text-[5.5rem]", leading: "leading-[0.8]",  titleClamp: "",           descClamp: "line-clamp-none" },
-  { sizeClass: "text-7xl",      leading: "leading-[0.85]", titleClamp: "",           descClamp: "line-clamp-none" },
-  { sizeClass: "text-6xl",      leading: "leading-[0.9]",  titleClamp: "",           descClamp: "line-clamp-none" },
-  { sizeClass: "text-5xl",      leading: "leading-[0.95]", titleClamp: "",           descClamp: "line-clamp-none" },
-  { sizeClass: "text-4xl",      leading: "leading-tight",  titleClamp: "",           descClamp: "line-clamp-none" },
-  { sizeClass: "text-2xl",      leading: "leading-snug",   titleClamp: "",           descClamp: "line-clamp-3"    },
-  { sizeClass: "text-xl",       leading: "leading-snug",   titleClamp: "line-clamp-4", descClamp: "line-clamp-2"  },
-  { sizeClass: "text-lg",       leading: "leading-snug",   titleClamp: "line-clamp-5", descClamp: "line-clamp-2"  },
-];
+  const fontConfig = [
+    { sizeClass: "text-[5.5rem]", leading: "leading-[0.8]",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-7xl",      leading: "leading-[0.85]", descClamp: "line-clamp-none" },
+    { sizeClass: "text-6xl",      leading: "leading-[0.9]",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-5xl",      leading: "leading-[0.95]", descClamp: "line-clamp-none" },
+    { sizeClass: "text-4xl",      leading: "leading-tight",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-2xl",      leading: "leading-snug",   descClamp: "line-clamp-5"    },
+  ];
 
   const handleNext = useCallback(() => {
     setDirection('next'); 
@@ -86,8 +84,12 @@ const fontConfig = [
   }, [currentIndex]);
 
   useLayoutEffect(() => {
-    if (textContainerRef.current) {
-        const element = textContainerRef.current;
+    const element = textContainerRef.current;
+    if (!element) return;
+
+    const checkFit = () => {
+        // Защита от мобильного бага: если высота еще не просчитана браузером, ждем
+        if (element.clientHeight === 0) return;
         
         const isOverflowingY = element.scrollHeight > element.clientHeight;
         const isOverflowingX = element.scrollWidth > element.clientWidth;
@@ -95,8 +97,21 @@ const fontConfig = [
         if ((isOverflowingY || isOverflowingX) && fontSizeIndex < fontConfig.length - 1) {
             setFontSizeIndex(prev => prev + 1);
         }
-    }
-  },[fontSizeIndex, currentIndex]);
+    };
+
+    // Проверяем сразу после рендера
+    checkFit();
+
+    // ResizeObserver гарантированно отловит момент, когда мобильный браузер 
+    // закончит рисовать flex-контейнер и выдаст ему реальные размеры
+    const observer = new ResizeObserver(() => {
+        checkFit();
+    });
+    
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [fontSizeIndex, currentIndex]);
 
   if (!posts || posts.length === 0) return null;
 
@@ -276,12 +291,12 @@ const fontConfig = [
                 >
                     <Link href={`/post/${activePost.slug || activePost.id}`} className="block w-full">
                         <div className={`flex items-start break-normal w-full ${!hasExcerpt ? 'mb-0' : 'mb-3'}`}>
-                        <h2 className={`
-                        font-serif text-theme-title tracking-tight hover:text-white transition-colors w-full uppercase hyphens-none
-                        ${currentFont.sizeClass} ${currentFont.leading} ${currentFont.titleClamp}
-                        `}>
-                        {displayTitle}
-                        </h2>
+                            <h2 className={`
+                                font-serif text-theme-title tracking-tight hover:text-white transition-colors w-full uppercase hyphens-none
+                                ${currentFont.sizeClass} ${currentFont.leading}
+                            `}>
+                                {displayTitle}
+                            </h2>
                         </div>
                     </Link>
                     
