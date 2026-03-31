@@ -21,13 +21,15 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
 
   const minSwipeDistance = 50;
 
-  const fontConfig = [
+const fontConfig = [
     { sizeClass: "text-[5.5rem]", leading: "leading-[0.8]",  descClamp: "line-clamp-none" },
     { sizeClass: "text-7xl",      leading: "leading-[0.85]", descClamp: "line-clamp-none" },
     { sizeClass: "text-6xl",      leading: "leading-[0.9]",  descClamp: "line-clamp-none" },
     { sizeClass: "text-5xl",      leading: "leading-[0.95]", descClamp: "line-clamp-none" },
     { sizeClass: "text-4xl",      leading: "leading-tight",  descClamp: "line-clamp-none" },
     { sizeClass: "text-2xl",      leading: "leading-snug",   descClamp: "line-clamp-5"    },
+    { sizeClass: "text-xl",       leading: "leading-snug",   descClamp: "line-clamp-6"    },
+    { sizeClass: "text-lg",       leading: "leading-normal", descClamp: "line-clamp-none" },
   ];
 
   const handleNext = useCallback(() => {
