@@ -18,15 +18,15 @@ type Props = {
 };
 
 // Санируем пользовательский ввод перед тем, как он попадает в запрос.
-// Удаляем символы, которые могут сломать синтаксис Supabase .or() и FTS:
+// Удаляем символы, которые могут сломать синтаксис Supabase .or() и ILIKE:
 // запятая — разделитель условий в .or()
-// точка — разделитель в FTS-операторах (fts(russian).query)
 // скобки — используются Supabase для группировки условий
 // процент — спецсимвол ILIKE, может дать "%%query%%" вместо "%query%"
 // одинарная кавычка — потенциальный SQL-инъект через строковые литералы
+// подчёркивание — wildcard-символ в ILIKE (матчит любой одиночный символ)
 function sanitizeQuery(raw: string): string {
   return raw
-    .replace(/[,().%']/g, ' ')  // заменяем опасные символы пробелом
+    .replace(/[,()%'_]/g, ' ')  // заменяем опасные символы пробелом
     .replace(/\s+/g, ' ')       // схлопываем множественные пробелы
     .trim()
     .slice(0, 100);             // ограничиваем длину запроса
@@ -55,7 +55,7 @@ export default async function SearchPage({ searchParams }: Props) {
     const { data } = await supabase
       .from('posts')
       .select('id, slug, title, excerpt, created_at, image_url, author, translator, views, categories(title, slug), category')
-      .or(`title.fts(russian).${query},author.ilike.%${query}%,excerpt.fts(russian).${query},content.fts(russian).${query}`)
+      .or(`title.ilike.%${query}%,author.ilike.%${query}%,excerpt.ilike.%${query}%,content.ilike.%${query}%`)
       .order('created_at', { ascending: false });
     posts = data as Post[] | null;
   }
