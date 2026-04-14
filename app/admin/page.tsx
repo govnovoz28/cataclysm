@@ -471,6 +471,19 @@ export default function AdminPage() {
     }
   }
 
+  const handleToggleFeatured = async (post: Post) => {
+    const newValue = !post.is_featured
+    const { error } = await supabase
+      .from('posts')
+      .update({ is_featured: newValue })
+      .eq('id', post.id)
+    if (!error) {
+      setPosts(posts.map(p =>
+        p.id === post.id ? { ...p, is_featured: newValue } : p
+      ))
+    }
+  }
+
   const handleSaveAuthor = async () => {
       if (!authFormName) return alert('Имя обязательно')
       setLoading(true)
@@ -752,6 +765,15 @@ export default function AdminPage() {
                      
                      {allowed && (
                          <div className={`absolute top-3 flex items-center gap-3 transition-all ${editingId === post.id ? 'right-5' : 'right-3'}`}>
+                             <button
+                               onClick={(e) => { e.stopPropagation(); handleToggleFeatured(post) }}
+                               className="transition-colors"
+                               title="В слайдер"
+                             >
+                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`w-4 h-4 transition-colors ${post.is_featured ? 'text-white' : 'text-neutral-700 hover:text-neutral-400'}`} fill={post.is_featured ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                               </svg>
+                             </button>
                              <button onClick={() => handleDelete(post)} className="transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4 text-neutral-700 hover:text-red-700">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
