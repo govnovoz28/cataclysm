@@ -43,7 +43,7 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [headings]);
 
-  if (headings.length === 0) return null
+  if (headings.length <= 1) return null
 
   return (
     <nav className={`sticky top-24 border bg-theme-bg/50 backdrop-blur-md rounded-sm hover:opacity-100 focus-within:opacity-100 transition-all duration-500 ${isAtTop ? 'opacity-100 border-neutral-800' : 'opacity-30 border-neutral-900'}`}>
