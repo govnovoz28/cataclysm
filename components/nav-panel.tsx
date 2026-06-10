@@ -13,6 +13,14 @@ type NavPanelProps = {
   categories: Category[];
 }
 
+function sanitizeQuery(raw: string): string {
+  return raw
+    .replace(/[,().%']/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 100)
+}
+
 export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
@@ -88,7 +96,7 @@ export default function NavPanel({ isOpen, onClose, categories }: NavPanelProps)
       const { data } = await supabase
         .from('posts')
         .select('id, slug, title, author')
-        .or(`title.fts(russian).${searchQuery},author.ilike.%${searchQuery}%,content.fts(russian).${searchQuery}`)
+        .or(`title.fts(russian).${sanitizeQuery(searchQuery)},author.ilike.%${sanitizeQuery(searchQuery)}%,content.fts(russian).${sanitizeQuery(searchQuery)}`)
         .limit(8)
 
       if (data) {
