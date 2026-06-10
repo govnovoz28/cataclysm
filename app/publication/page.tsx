@@ -24,13 +24,14 @@ export default function PublicationPage() {
          
         <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
             <div className="relative w-[500px] h-[500px] bg-watermark">
-                <Image 
-                    src="/logo.png" 
-                    alt="" 
-                    fill
-                    priority
-                    className="object-contain"
-                />
+              <Image 
+                src="/logo.png" 
+                alt="" 
+                fill
+                priority
+                unoptimized
+                className="object-contain"
+              />
             </div>
         </div>
 
