@@ -1,11 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-const ALLOWED_ADMINS = [
-  'svatoslav.kopaev046@gmail.com',
-  'kirill20042811@gmail.com',
-  'rustamtishkov@gmail.com',
-  'mk11dava@gmail.com'
-]
+
+const ALLOWED_ADMINS = (process.env.ALLOWED_ADMINS || '').split(',').filter(Boolean)
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
