@@ -76,7 +76,7 @@ function extractHeadings(html: string) {
   // Заменяем Supabase-урлы в теле статьи на Cloudflare Worker
   modifiedHtml = modifiedHtml.replace(
     /https:\/\/kksblfpjhrkbuuvsbvcf\.supabase\.co/g,
-    'https://img.cataclysm.online'
+    ''
   );
 
   return { modifiedHtml, headings };
