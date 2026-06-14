@@ -1,12 +1,10 @@
-// ==========================================
-// components\heroslider.tsx
-// ==========================================
 'use client';
 
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Post } from '@/types';
+import { getImageUrl } from '@/utils/imageUrl';
 
 export default function HeroSlider({ posts }: { posts: Post[] }) {
   const[currentIndex, setCurrentIndex] = useState(0);
@@ -24,13 +22,13 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
 
   const minSwipeDistance = 50;
 
-  const fontConfig =[
-    { sizeClass: "text-4xl md:text-6xl lg:text-[5rem] xl:text-[6rem]", leading: "leading-[0.8]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-4xl md:text-5xl lg:text-6xl xl:text-7xl", leading: "leading-[0.85]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-3xl md:text-4xl lg:text-5xl xl:text-6xl", leading: "leading-[0.9]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-2xl md:text-3xl lg:text-4xl xl:text-5xl", leading: "leading-[0.95]", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-xl md:text-2xl lg:text-3xl", leading: "leading-tight", titleClamp: "", descClamp: "line-clamp-none" },
-    { sizeClass: "text-lg md:text-xl", leading: "leading-snug", titleClamp: "", descClamp: "line-clamp-5" }
+  const fontConfig = [
+    { sizeClass: "text-[5.5rem]", leading: "leading-[0.8]",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-7xl",      leading: "leading-[0.85]", descClamp: "line-clamp-none" },
+    { sizeClass: "text-6xl",      leading: "leading-[0.9]",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-5xl",      leading: "leading-[0.95]", descClamp: "line-clamp-none" },
+    { sizeClass: "text-4xl",      leading: "leading-tight",  descClamp: "line-clamp-none" },
+    { sizeClass: "text-2xl",      leading: "leading-snug",   descClamp: "line-clamp-5"    },
   ];
 
   const handleNext = useCallback(() => {
@@ -87,8 +85,11 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
   }, [currentIndex]);
 
   useLayoutEffect(() => {
-    if (textContainerRef.current) {
-        const element = textContainerRef.current;
+    const element = textContainerRef.current;
+    if (!element) return;
+
+    const checkFit = () => {
+        if (element.clientHeight === 0) return;
         
         const isOverflowingY = element.scrollHeight > element.clientHeight;
         const isOverflowingX = element.scrollWidth > element.clientWidth;
@@ -96,8 +97,18 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
         if ((isOverflowingY || isOverflowingX) && fontSizeIndex < fontConfig.length - 1) {
             setFontSizeIndex(prev => prev + 1);
         }
-    }
-  },[fontSizeIndex, currentIndex]);
+    };
+
+    checkFit();
+
+    const observer = new ResizeObserver(() => {
+        checkFit();
+    });
+    
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [fontSizeIndex, currentIndex]);
 
   if (!posts || posts.length === 0) return null;
 
@@ -139,12 +150,13 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
       <div className="absolute inset-0 flex items-center justify-center px-4">
         <div className="relative w-full max-w-[1500px] h-full flex items-center justify-center">
 
+            {/* ← PREV (боковая карточка) */}
             <div className="absolute left-0 md:left-[2%] w-[20%] md:w-[25%] h-[280px] md:h-[380px] z-10 transition-all duration-700 ease-in-out pointer-events-none hidden md:block">
                 {posts[prevIndex].image_url ? (
                 <div className="relative w-full h-full">
                     <Image 
                         key={posts[prevIndex].id}
-                        src={posts[prevIndex].image_url!} 
+                        src={getImageUrl(posts[prevIndex].image_url)}
                         className={`object-cover grayscale brightness-[0.25] ${animationClass}`} 
                         alt="" 
                         fill
@@ -156,12 +168,13 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 )}
             </div>
 
+            {/* → NEXT (боковая карточка) */}
             <div className="absolute right-0 md:right-[2%] w-[20%] md:w-[25%] h-[280px] md:h-[380px] z-10 transition-all duration-700 ease-in-out pointer-events-none hidden md:block">
                 {posts[nextIndex].image_url ? (
                 <div className="relative w-full h-full">
                     <Image 
                         key={posts[nextIndex].id}
-                        src={posts[nextIndex].image_url!} 
+                        src={getImageUrl(posts[nextIndex].image_url)}
                         className={`object-cover grayscale brightness-[0.25] ${animationClass}`} 
                         alt="" 
                         fill
@@ -173,6 +186,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 )}
             </div>
 
+            {/* ЦЕНТРАЛЬНАЯ карточка */}
             <div className="relative z-20 w-full md:w-[70%] max-w-[1000px] h-full md:h-[450px] 
                             bg-theme-bg border border-neutral-900 shadow-2xl 
                             flex flex-col md:flex-row transition-transform duration-500">
@@ -189,12 +203,13 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                     </svg>
                 </button>
 
+                {/* Изображение активного поста */}
                 <div className="relative w-full md:w-[45%] h-56 md:h-full overflow-hidden border-b md:border-b-0 md:border-r border-neutral-900 bg-neutral-900">
                 <Link href={`/post/${activePost.slug || activePost.id}`} className="block w-full h-full group relative">
                     {activePost.image_url ? (
                         <Image 
                             key={activePost.id}
-                            src={activePost.image_url} 
+                            src={getImageUrl(activePost.image_url)}
                             alt={activePost.title} 
                             className={`object-cover ${animationClass}`}
                             fill
@@ -209,6 +224,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                 </Link>
                 </div>
 
+                {/* Текстовая часть */}
                 <div className="w-full md:w-[55%] p-6 md:p-10 flex flex-col h-full bg-theme-bg overflow-hidden">
                 
                 <div 
@@ -279,7 +295,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
                         <div className={`flex items-start break-normal w-full ${!hasExcerpt ? 'mb-0' : 'mb-3'}`}>
                             <h2 className={`
                                 font-serif text-theme-title tracking-tight hover:text-white transition-colors w-full uppercase hyphens-none
-                                ${currentFont.sizeClass} ${currentFont.leading} ${currentFont.titleClamp}
+                                ${currentFont.sizeClass} ${currentFont.leading}
                             `}>
                                 {displayTitle}
                             </h2>
@@ -305,6 +321,7 @@ export default function HeroSlider({ posts }: { posts: Post[] }) {
         </div>
       </div>
 
+      {/* Точки-индикаторы */}
       <div className="absolute -bottom-8 left-0 right-0 flex justify-center gap-3 z-30">
           {posts.map((_, idx) => (
             <button

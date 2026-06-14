@@ -1,6 +1,3 @@
-// ==========================================
-// next.config.ts
-// ==========================================
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -13,6 +10,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'kksblfpjhrkbuuvsbvcf.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.cataclysm.online',
       },
     ],
   },

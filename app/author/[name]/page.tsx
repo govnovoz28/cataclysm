@@ -4,6 +4,7 @@
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getImageUrl } from '@/utils/imageUrl'
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import AuthorSidebar from '@/components/author-sidebar';
@@ -94,13 +95,14 @@ export default async function AuthorPage({ params, searchParams }: Props) {
          
         <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none overflow-hidden">
             <div className="relative w-[500px] h-[500px] bg-watermark">
-                <Image 
-                    src="/logo.png" 
-                    alt="" 
-                    fill
-                    priority
-                    className="object-contain"
-                />
+            <Image 
+              src="/logo.png" 
+              alt="" 
+              fill
+              priority
+              unoptimized
+              className="object-contain"
+            />
             </div>
         </div>
 
@@ -166,7 +168,7 @@ export default async function AuthorPage({ params, searchParams }: Props) {
                         >
                           {post.image_url ? (
                             <Image 
-                              src={post.image_url} 
+                              src={getImageUrl(post.image_url)}
                               alt={post.title}
                               fill
                               className="object-cover grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0"

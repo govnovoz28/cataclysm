@@ -1,6 +1,3 @@
-// ==========================================
-// components\tiptapeditor.tsx
-// ==========================================
 'use client'
 
 import { useEditor, EditorContent } from '@tiptap/react'
@@ -131,7 +128,6 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
         class: `
           prose prose-p:text-xl max-w-none font-serif text-theme-text 
           focus:outline-none min-h-[50vh] p-4 
-          prose-p:m-0
           prose-headings:font-bold prose-headings:text-white 
           prose-blockquote:border-l-2 prose-blockquote:border-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-theme-text 
           placeholder:text-neutral-700 [&_blockquote_p]:text-left [&_blockquote_p+p:last-of-type]:text-right [&_blockquote_p+p:last-of-type]:mt-4[&_blockquote_p+p:last-of-type]:text-theme-text 

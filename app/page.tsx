@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import Link from 'next/link';
+import { getImageUrl } from '@/utils/imageUrl'
 import Image from 'next/image'; 
 import HeroSlider from '@/components/heroslider';
 import Header from '@/components/header';
@@ -144,7 +145,7 @@ export default async function Home({
 
                       {post.image_url ? (
                         <Image 
-                          src={post.image_url} 
+                          src={getImageUrl(post.image_url)}
                           alt={post.title}
                           fill
                           className="object-cover grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0"

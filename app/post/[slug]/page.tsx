@@ -10,6 +10,7 @@ import ScrollToTop from '@/components/scroll-to-top';
 import { ThemeToggle } from '@/components/theme-toggle';
 import TableOfContents from '@/components/table-of-contents';
 import type { Post } from '@/types';
+import { getImageUrl } from '@/utils/imageUrl';
 
 export const revalidate = 600;
 
@@ -30,8 +31,9 @@ const getPost = cache(async (slug: string): Promise<Post | null> => {
 
 function capitalizeFirstLetter(string: string | null | undefined) {
   if (!string) return '';
-  const lower = string.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
+  return string.replace(/(^|:\s+)([а-яёa-z])/g, (_, prefix, char) =>
+    prefix + char.toUpperCase()
+  );
 }
 
 function extractHeadings(html: string) {
@@ -71,6 +73,12 @@ function extractHeadings(html: string) {
     return `<p${attrs} class="manual-list-item">${content}</p>`;
   });
 
+  // Заменяем Supabase-урлы в теле статьи на Cloudflare Worker
+  modifiedHtml = modifiedHtml.replace(
+    /https:\/\/kksblfpjhrkbuuvsbvcf\.supabase\.co/g,
+    'https://img.cataclysm.online'
+  );
+
   return { modifiedHtml, headings };
 }
 
@@ -99,7 +107,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       authors: post.author ? [post.author] : undefined,
       images: post.image_url
-        ? [{ url: post.image_url, width: 1200, height: 630, alt: formattedTitle }]
+        ? [{ url: getImageUrl(post.image_url), width: 1200, height: 630, alt: formattedTitle }]
         : [],
     },
     twitter: {
@@ -171,7 +179,7 @@ export default async function PostPage({ params }: Props) {
           <div className="w-full h-[50vh] md:h-[70vh] relative">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-bg/50 to-theme-bg z-10"></div>
             <Image 
-              src={post.image_url} 
+              src={getImageUrl(post.image_url)} 
               alt={formattedTitle} 
               fill
               priority

@@ -105,6 +105,20 @@ body {
   outline: none !important; 
 }
 
+/* ─── ФИКС: межабзацные отступы в редакторе ─────────────────────────────────
+   prose-p:m-0 в классах EditorContent обнулял margin у всех <p>,
+   из-за чего абзацы «слипались» и требовался двойной Enter.
+   Здесь явно задаём отступ сверху для каждого параграфа, кроме первого. */
+.ProseMirror p {
+  margin-top: 1em !important;
+  margin-bottom: 0 !important;
+}
+
+.ProseMirror p:first-child {
+  margin-top: 0 !important;
+}
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 .ProseMirror strong,
 .article-content strong {
   font-weight: 700 !important;

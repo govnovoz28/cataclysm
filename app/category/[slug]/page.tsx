@@ -4,6 +4,7 @@
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getImageUrl } from '@/utils/imageUrl'
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { Orbitron } from 'next/font/google';
@@ -161,7 +162,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                 >
                   {post.image_url ? (
                     <Image 
-                      src={post.image_url} 
+                      src={getImageUrl(post.image_url)}
                       alt={post.title}
                       fill
                       className="object-cover grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0"
