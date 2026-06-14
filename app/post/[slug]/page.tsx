@@ -290,7 +290,7 @@ export default async function PostPage({ params }: Props) {
 
             <div className="w-full max-w-[800px] mx-auto px-6">
               
-              {isLongText && headings.length > 0 && (
+              {isLongText && headings.length > 1 && (
                 <details className="xl:hidden mb-10 border border-neutral-900 bg-theme-bg/50 group">
                   <summary className="flex items-center justify-between p-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden [&::marker]:hidden">
                     <span className="text-[10px] font-[system-ui,sans-serif] font-medium text-neutral-500 uppercase tracking-widest">
