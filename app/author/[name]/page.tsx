@@ -17,7 +17,7 @@ const orbitron = Orbitron({
   display: 'swap',
 });
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 const POSTS_PER_PAGE = 4;
 

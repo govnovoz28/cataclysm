@@ -7,7 +7,7 @@ import Header from '@/components/header';
 import AuthorLink from '@/components/author-link';
 import type { Post, Category } from '@/types';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 const POSTS_PER_PAGE = 6;
 
