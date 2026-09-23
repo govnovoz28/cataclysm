@@ -73,10 +73,10 @@ function extractHeadings(html: string) {
     return `<p${attrs} class="manual-list-item">${content}</p>`;
   });
 
-  // Заменяем Supabase-урлы в теле статьи на Cloudflare Worker
+// Заменяем адреса на относительный путь для быстрой загрузки через Render
   modifiedHtml = modifiedHtml.replace(
-    /https:\/\/kksblfpjhrkbuuvsbvcf\.supabase\.co/g,
-    'https://img.cataclysm.online'
+    /https:\/\/(kksblfpjhrkbuuvsbvcf\.supabase\.co|img\.cataclysm\.online)/g,
+    ''
   );
 
   return { modifiedHtml, headings };
